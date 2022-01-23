@@ -1,0 +1,64 @@
+package com.argentumjk.client.containers;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.argentumjk.client.objects.Fx;
+import com.argentumjk.client.utils.BytesReader;
+import com.argentumjk.client.utils.NotEnoughDataException;
+
+import java.io.IOException;
+
+import static com.argentumjk.client.general.FileNames.*;
+
+/**
+ * Manejador de Fxs
+ *
+ * fxs: array de Fxs
+ */
+public class Fxs {
+    private Fx[] fxs;
+
+    public Fxs() {
+        try {
+            load();
+        }
+        catch (NotEnoughDataException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Carga todos los Fxs
+     */
+    private void load() throws NotEnoughDataException {
+
+        FileHandle fh = Gdx.files.internal(getFxsIndDir());
+        BytesReader r = new BytesReader(fh.readBytes(), true);
+
+        // Omite los primeros bytes que no interesan
+        r.skipBytes(263);
+
+        int cant = r.readShort();
+        fxs = new Fx[cant];
+
+        for (int i = 0; i < cant; i++) {
+            Fx fx = new Fx();
+
+            fx.setGrhIndex(r.readShort());
+            fx.setOffsetX(r.readShort());
+            fx.setOffsetY(r.readShort());
+
+            fxs[i] = fx;
+        }
+    }
+
+    public Fx[] getFxs() { return fxs; }
+
+    /**
+     * Obtiene un fx (verificar a la hora de usarlo que no sea null)
+     */
+    public Fx getFx(int index) {
+        if (index - 1 < 0 || index - 1 >= fxs.length) return null;
+        return fxs[index - 1];
+    }
+}

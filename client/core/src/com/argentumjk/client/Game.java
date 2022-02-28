@@ -50,13 +50,15 @@ public class Game extends com.badlogic.gdx.Game {
      *
      * @param rebootable trozo de código que reinicia el juego
      */
-    public Game(Runnable rebootable, IMidiPlayer midiPlayer) {
+    public Game(Runnable rebootable, IMidiPlayer midiPlayer, boolean fullscreen) {
         this.rebootable = rebootable;
         this.midiPlayer = midiPlayer;
+        this.fullscreen = fullscreen;
     }
 
 
     private Runnable rebootable;
+    private boolean fullscreen;
 
     private I18NBundle bundle;
     private Batch batch;
@@ -91,6 +93,10 @@ public class Game extends com.badlogic.gdx.Game {
         Gdx.graphics.setTitle("Argentum Online");
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         Gdx.input.setCatchBackKey(true);
+
+        if (fullscreen && Gdx.graphics.supportsDisplayModeChange()) {
+            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        }
 
         // TODO: ver el tema del cursor
 		/*Pixmap pm = new Pixmap(Gdx.files.internal(getCursorDir()));

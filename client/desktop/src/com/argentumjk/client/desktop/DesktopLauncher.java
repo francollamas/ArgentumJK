@@ -11,8 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 
-import static com.argentumjk.client.general.DtConfig.decorated;
-import static com.argentumjk.client.general.DtConfig.vSync;
+import static com.argentumjk.client.general.DtConfig.*;
 
 public class DesktopLauncher {
     public static void main(String[] arg) {
@@ -27,7 +26,8 @@ public class DesktopLauncher {
             }
         };
 
-        createLwjgl3Application(new Game(rebootable, new DesktopMidiPlayer()));
+        DtConfig.loadConfig();
+        createLwjgl3Application(new Game(rebootable, new DesktopMidiPlayer(), fullscreeen));
     }
 
     /**
@@ -35,27 +35,14 @@ public class DesktopLauncher {
      */
     private static Lwjgl3Application createLwjgl3Application(Game game) {
 
-        DtConfig.loadConfig();
-
-        System.setProperty("org.lwjgl.opengl.Display.allowSoftwareOpenGL", "true");
-        if (!decorated) System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
-
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 
-        // TODO ACT corregir config
-        //config.width = width;
-        //config.height = height;
-        //config.resizable = resizable;
-        //config.fullscreen = fullscreeen;
+        config.useVsync(vSync);
+        config.setDecorated(decorated);
+        config.setResizable(resizable);
+        config.setWindowedMode(width, height);
 
         config.setWindowIcon("icons/icon128.png", "icons/icon64.png", "icons/icon32.png", "icons/icon16.png");
-
-        if (!vSync) {
-            // TODO ACT corregir config
-            //config.vSyncEnabled = false;
-            //config.foregroundFPS = 0;
-            //config.backgroundFPS = 0;
-        }
 
         return new Lwjgl3Application(game, config);
     }

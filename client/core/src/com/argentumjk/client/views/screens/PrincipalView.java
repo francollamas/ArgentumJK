@@ -35,12 +35,11 @@ public class PrincipalView extends View {
             Table izq = newTable(first).padLeft(13).padTop(13).padBottom(13).padRight(4).getActor();
                 Table titulo = newTable(izq).colspan(2).prefHeight(25).left().getActor(); izq.row();
                     lbFps = newLabel(titulo, "FPS: ", Color.WHITE, "bold").left().getActor();
-                izq.add(getGestor().getConsola()).colspan(2).width(572).height(99).left().row();
+                izq.add(getGestor().getConsola()).colspan(2).width(500).height(99).left().row();
                 newSelectBox(izq, bu("pp.t-normal"), bu("pp.t-whisper"), bu("pp.t-clan"), bu("pp.t-shout"), bu("pp.t-role"), bu("pp.t-team"));
                 tfSend = newTextField(izq, "", "").fill().expand().getActor(); izq.row();
                 tfSend.setMaxLength(160); tfSend.setDisabled(true);
                 izq.add(getGestor().getWorld()).colspan(2).row();
-                newTable(izq).colspan(2).prefHeight(40);
 
             Table der = newTable(first).padLeft(4).padTop(13).padBottom(13).padRight(13).expandX().getActor();
                 newTable(der).width(240).height(120).top().row();

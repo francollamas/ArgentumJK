@@ -16,6 +16,7 @@ public class DesktopMidiPlayer implements IMidiPlayer {
     private Sequence sequence;
     private Sequencer sequencer;
     private Synthesizer synthesizer;
+    private Receiver receiver;
     private int currentNum;
 
     public DesktopMidiPlayer() {
@@ -46,7 +47,8 @@ public class DesktopMidiPlayer implements IMidiPlayer {
             sequencer.open();
             synthesizer.open();
             synthesizer.loadAllInstruments(soundfont);
-            //sequencer.getTransmitter().setReceiver(synthesizer.getReceiver());
+            receiver = synthesizer.getReceiver();
+            sequencer.getTransmitter().setReceiver(receiver);
             sequencer.setSequence(sequence);
             setLooping(true);
             sequencer.start();

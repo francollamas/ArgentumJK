@@ -1,5 +1,6 @@
 package com.argentumjk.client.managers.screens;
 
+import com.argentumjk.client.general.IMidiPlayer;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.argentumjk.client.Game;
@@ -79,9 +80,14 @@ public class ConfigManager extends ViewManager {
         Audio a = Game.getInstance().getAssets().getAudio();
         a.setMusicVolume(volMusica);
         a.setSoundVolume(volSonido);
+
+        IMidiPlayer m = Game.getInstance().getMidiPlayer();
+        m.setVolume(volMusica);
+
         if (a.getMusic() != null) a.getMusic().setVolume(volMusica);
 
         a.setMuteMusic(!musica);
+        m.setMuteMidi(!musica);
         a.setMuteSound(!sonido);
     }
 

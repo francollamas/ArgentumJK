@@ -29,6 +29,7 @@ public class DtConfig {
      */
     public static void loadConfig() {
         File configFile = new File(System.getProperty("user.home") + getDtConfigDir());
+        System.out.println(configFile.getPath());
         configFile.getParentFile().mkdir();
 
         try {

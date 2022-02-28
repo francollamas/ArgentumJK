@@ -76,10 +76,10 @@ public class CrearPjView extends View {
                 sbGenero = newSelectBox(t2, bu("male"), bu("female")).fill().getActor(); t2.row();
 
                 newLabel(t2, bu("cp.race"), "col-title", "smallgradient").left().spaceBottom(0).row();
-                sbRaza = newSelectBox(t2, bu("human"), bu("elf"), bu("dark-elf"), bu("gnome"), bu("dwarf")).fill().getActor();
+                sbRaza = newSelectBox(t2, bu("human"), bu("elf"), bu("dark-elf"), bu("gnome"), bu("dwarf")).fill().getActor(); t2.row();
 
                 newLabel(t2, bu("cp.class"), "col-title", "smallgradient").left().spaceBottom(0).row();
-                sbClase = newSelectBox(t2, "Mago", "Clerigo", "Guerrero", "Asesino", "Ladron", "Bardo", "Druida", "Bandido", "Paladin", "Cazador", "Pescador", "Herrero", "Leñador", "Minero", "Carpintero", "Pirata").width(130).getActor();
+                sbClase = newSelectBox(t2, "Mago", "Clerigo", "Guerrero", "Asesino", "Ladron", "Bardo", "Druida", "Bandido", "Paladin", "Cazador", "Pescador", "Herrero", "Leñador", "Minero", "Carpintero", "Pirata").fill().getActor();
 
         Table t3 = newTable(w).top().getActor(); w.row();
                 newLabel(t3, bu("throw-dices"), "col-title", "smallgradient").left().spaceBottom(0).row();

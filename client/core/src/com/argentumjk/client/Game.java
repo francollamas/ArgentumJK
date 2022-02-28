@@ -1,5 +1,6 @@
 package com.argentumjk.client;
 
+import com.argentumjk.client.general.EmptyMidiPlayer;
 import com.argentumjk.client.general.IMidiPlayer;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -103,9 +104,11 @@ public class Game extends com.badlogic.gdx.Game {
 		Gdx.graphics.setCursor(Gdx.graphics.newCursor(pm, 0, 0));
 		pm.dispose();*/
 
-        if (midiPlayer != null) {
-            midiPlayer.initialize();
+        if (midiPlayer == null) {
+            midiPlayer = new EmptyMidiPlayer();
         }
+        midiPlayer.initialize();
+
 
         // Config propia del juego
         bundle = I18NBundle.createBundle(Gdx.files.internal(getBundleDir()));

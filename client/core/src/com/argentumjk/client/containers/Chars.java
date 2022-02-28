@@ -32,6 +32,7 @@ public class Chars {
      */
     public void moveChar(int index, int x, int y) {
         Char c = chars[index];
+        if (c == null) return; // TODO: parche, para el caso de que nos manden movimientos de PJs que no estan en el area
         Game.getInstance().getAssets().getMapa().getTile((int)c.getPos().getX(), (int)c.getPos().getY()).setCharIndex(0);
         Game.getInstance().getAssets().getMapa().getTile(x, y).setCharIndex(index);
 

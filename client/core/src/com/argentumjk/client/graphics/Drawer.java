@@ -197,13 +197,10 @@ public final class Drawer {
     public static TextureRegion getTextureRegion(int numGrafico, Rect r) {
         TextureRegion reg = new TextureRegion(Game.getInstance().getAssets().getTextures().getTexture(numGrafico));
 
-        // TODO ACT Hardcode: arranco a partir del pixel (16,16), ya que los gráficos tienen bordes blancos (para evitar problemas gráficos)
-        int padding = 0;
-
         // Verificamos si hay que buscar una región específica de la textura.
         if (r != null)
             if (reg != null)
-                reg = new TextureRegion(reg, (int) r.getX1() + padding, (int) r.getY1() + padding, (int) r.getWidth(), (int) r.getHeight());
+                reg = new TextureRegion(reg, (int) r.getX1(), (int) r.getY1(), (int) r.getWidth(), (int) r.getHeight());
 
         return reg;
     }

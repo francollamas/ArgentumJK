@@ -5,27 +5,24 @@ import com.badlogic.gdx.graphics.Color;
 
 /**
  * Contiene los colores de los nicks de los PJs.
- *
+ * <p>
  * colors: array de colores
  */
 public class Colors {
     private Color[] colors;
 
     public Colors() {
-        colors = new Color[11];
-        colors[0] = newColor(0, 128, 255); // ciudadano
-        colors[1] = newColor(255, 0, 0); // criminal
-        colors[2] = newColor(0, 240, 0); // newbie
-        colors[3] = newColor(190, 190, 190); // neutral
+        colors = new Color[51];
 
-        colors[4] = newColor(255, 128, 64); // consejero
-        colors[5] = newColor(255, 128, 64); // semidioses
-        colors[6] = newColor(255, 128, 64); // dioses
-        colors[7] = newColor(255, 128, 64); // admins
-
-        colors[8] = newColor(180, 180, 180); // rol master
-        colors[9] = newColor(255, 128, 0); // consejo del caos
-        colors[10] = newColor(0, 195, 255); // consejo de bander
+        colors[1] = newColor(30, 150, 30); // consejeros
+        colors[2] = newColor(30, 255, 30); // semidioses
+        colors[3] = newColor(250, 250, 150); // dioses
+        colors[4] = newColor(255, 255, 255); // admins
+        colors[5] = newColor(180, 180, 180); // rolmasters
+        colors[6] = newColor(255, 50, 0); // caos
+        colors[7] = newColor(0, 195, 255); // consejo de bander
+        colors[49] = newColor(0, 128, 255); // ciudadanos
+        colors[50] = newColor(255, 0, 0); // criminales
     }
 
     public static Color newColor(int r, int g, int b) {
@@ -40,9 +37,13 @@ public class Colors {
      * Obtiene el color correspondiente según privilegios y bando
      */
     public Color getColor(int priv, int bando) {
-        if (priv == 0)
-            return colors[bando - 2];
-        else
+        if (priv == 0) {
+            if (bando == 1) {
+                return colors[50];
+            }
+            return colors[49];
+        } else {
             return colors[priv + 3];
+        }
     }
 }

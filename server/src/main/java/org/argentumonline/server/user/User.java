@@ -2098,6 +2098,8 @@ public class User extends AbstractCharacter {
 				map.moveUser(this, newPos);
 			}
 
+
+
 			// TELEPORT USER
 			if (map.isTeleport(newPos.x, newPos.y)) {
 				// Esto es similar al DoTileEvents original
@@ -2323,9 +2325,12 @@ public class User extends AbstractCharacter {
 		pos().set(mapNumber, freePos.x, freePos.y);
 		if (sendingData) {
 			sendPacket(new ChangeMapResponse(mapNumber, targetMap.getVersion()));
+			sendPacket(new PlayMidiResponse((byte) targetMap.getMusic(), (short)45));
 		}
 		Map map = server.getMap(pos().map);
 		AreasAO.instance().loadUser(map, this);
+
+		sendCharIndexInServer();
 		sendPositionUpdate();
 
 		if (withFX) {
@@ -2334,8 +2339,6 @@ public class User extends AbstractCharacter {
 				sendWave(SOUND_WARP);
 			}
 		}
-
-		sendCharIndexInServer();
 
 		if (originalPos.map != mapNumber) {
 			warpPets();
@@ -3938,6 +3941,8 @@ public class User extends AbstractCharacter {
 		}
 
 		saveUser();
+		// TODO: esta línea es un parche para que no me patee por "PJ ya logueado".. ver como arreglarlo mejor.
+		this.userName = "";
 		connectUser(userName, password);
 	}
 
@@ -4146,6 +4151,10 @@ public class User extends AbstractCharacter {
 			}
 			
 			sendCharIndexInServer();
+
+			// thusing
+			//Map map = this.server.getMap(pos().map);
+			//sendPacket(new PlayMidiResponse((byte) map.getMusic(), (short)45));
 			
 			checkUserLevel();
 			sendUpdateUserStats();

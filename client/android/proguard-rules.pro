@@ -40,3 +40,10 @@
    boolean reportFixture(long);
    float   reportRayFixture(long, float, float, float, float, float);
 }
+
+-keep class com.badlogic.** {*;}
+-keep class com.kotcrab.** {*;} # TODO: remove this when I remove VisUI
+-keep class com.ray3k.tenpatch.** { *; }
+
+# Keep this if we need to use reflection in this project
+#-keepclassmembers class com.argentumjk.client.somepackage.** { void *(...); }

@@ -1,0 +1,17 @@
+[compileJava, compileTestJava]*.options*.encoding = 'ISO-8859-1'
+eclipse.project.name = appName + '-core'
+
+dependencies {
+	api "com.badlogicgames.gdx:gdx:$gdxVersion"
+	api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+	api 'org.apache.logging.log4j:log4j-api:2.17.1'
+	api 'org.apache.logging.log4j:log4j-core:2.17.1'
+	api 'com.fasterxml.jackson.core:jackson-databind:2.9.+'
+	api 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.+'
+	api 'io.netty:netty-all:4.1.42.Final'
+	api 'com.google.code.gson:gson:2.8.5'
+	api 'com.sparkjava:spark-core:2.7.2'
+	api 'at.favre.lib:bcrypt:0.7.0'
+	api 'org.slf4j:slf4j-api:1.7.25'
+	api 'org.slf4j:slf4j-simple:1.7.25'
+}

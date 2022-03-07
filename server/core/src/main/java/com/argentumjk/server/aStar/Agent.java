@@ -1,0 +1,1 @@
+package com.argentumjk.server.aStar;public class Agent {	//}

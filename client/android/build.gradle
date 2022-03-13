@@ -18,7 +18,7 @@ android {
     }
     defaultConfig {
         applicationId "com.argentumjk.client"
-        minSdkVersion 14
+        minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -29,6 +29,9 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
     }
 }
 

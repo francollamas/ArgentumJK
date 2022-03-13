@@ -85,11 +85,20 @@ project(":ios") {
     }
 }
 
+project(":server") {
+    apply plugin: "kotlin"
+
+    dependencies {
+
+    }
+}
+
 project(":core") {
     apply plugin: "kotlin"
 
 
     dependencies {
+        implementation project(":server")
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
         api "com.kotcrab.vis:vis-ui:$visuiVersion"

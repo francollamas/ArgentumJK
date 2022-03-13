@@ -1,0 +1,12 @@
+[compileJava, compileTestJava]*.options*.encoding = 'ISO-8859-1'
+[compileJava, compileTestJava]*.options*.compilerArgs << "-Xlint:deprecation"
+eclipse.project.name = appName + '-core'
+
+dependencies {
+	api "com.badlogicgames.gdx:gdx:$gdxVersion"
+	api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+	api 'io.netty:netty-all:4.1.42.Final'
+	api 'com.google.code.gson:gson:2.8.5'
+	api 'com.sparkjava:spark-core:2.7.2'
+	api 'at.favre.lib:bcrypt:0.7.0'
+}

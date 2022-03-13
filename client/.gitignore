@@ -5,6 +5,8 @@
 *.ear
 hs_err_pid*
 
+/assets/charfile/
+
 ## Robovm
 /ios/robovm-build/
 
@@ -109,6 +111,7 @@ gradle-app.setting
 /html/build/
 /ios/build/
 /ios-moe/build/
+/server/build/
 
 ## OS Specific
 .DS_Store

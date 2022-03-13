@@ -2,6 +2,7 @@ package com.argentumjk.client;
 
 import com.argentumjk.client.general.EmptyMidiPlayer;
 import com.argentumjk.client.general.IMidiPlayer;
+import com.argentumjk.server.GameServer;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -117,6 +118,13 @@ public class Game extends com.badlogic.gdx.Game {
         assets = new Assets();
         VisUI.load(assets.getGDXAssets().get(getSkinDir(), Skin.class));
         gameData = new GameData();
+
+        // TODO: reubicar... es para arrancar el server aqui mismo...
+
+        var th = new Thread(() -> GameServer.instance().runGameLoop());
+        th.start();
+
+        //GameServer.instance().runGameLoop();
 
         // Conexión
         connection = new GnConnection();

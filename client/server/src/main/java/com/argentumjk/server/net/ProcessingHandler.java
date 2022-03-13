@@ -39,7 +39,7 @@ class ProcessingHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object packet) throws Exception {
-		var server = GameServer.instance();
+		GameServer server = GameServer.instance();
 		Optional<User> p = server.findUser(ctx.channel());
 		if (!p.isPresent()) {
 			return;

@@ -17,6 +17,7 @@
  *******************************************************************************/
 package com.argentumjk.server.areas;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
@@ -30,6 +31,7 @@ import com.argentumjk.server.npc.Npc;
 import com.argentumjk.server.protocol.AreaChangedResponse;
 import com.argentumjk.server.protocol.ObjectCreateResponse;
 import com.argentumjk.server.protocol.SetInvisibleResponse;
+import com.argentumjk.server.user.CharArea;
 import com.argentumjk.server.user.User;
 
 
@@ -115,7 +117,7 @@ public class AreasAO implements Constants {
 	
 	public void checkUpdateNeededUser(Map map, User user, Heading heading) {
 		
-		var userArea = user.charArea();
+		CharArea userArea = user.charArea();
 		if (userArea.areaID == MAP_TO_AREA[user.pos().x][user.pos().y]) {
 			return;
 		}
@@ -262,7 +264,7 @@ public class AreasAO implements Constants {
 	
 	public void checkUpdateNeededNpc(Map map, Npc npc, Heading heading) {
 
-		var npcArea = npc.charArea();
+		CharArea npcArea = npc.charArea();
 		if (npcArea.areaID == MAP_TO_AREA[npc.pos().x][npc.pos().y]) {
 			return;
 		}
@@ -408,7 +410,7 @@ public class AreasAO implements Constants {
 	 * Envío de datos al área del user, y adyacentes
 	 */
 	public void sendToUserArea(Map map, User user, ServerPacket packet) {
-		var userArea = user.charArea();
+		CharArea userArea = user.charArea();
 		
 		int areaX = userArea.currentAreaX;
 		int areaY = userArea.currentAreaY;
@@ -433,7 +435,7 @@ public class AreasAO implements Constants {
 	 * Envío al área del user, y adyacentes, excepto al parámetro 'user'
 	 */
 	public void sendToUserAreaButIndex(Map map, User user, ServerPacket packet) {
-		var userArea = user.charArea();
+		CharArea userArea = user.charArea();
 
 		int areaX = userArea.currentAreaX;
 		int areaY = userArea.currentAreaY;
@@ -464,8 +466,9 @@ public class AreasAO implements Constants {
 
 		int areaX = npc.charArea().currentAreaX;
 		int areaY = npc.charArea().currentAreaY;
-		
-		for (User user : List.copyOf(map.getUsers())) {
+
+		List<User> u = new ArrayList<>(map.getUsers());
+		for (User user : u) {
 			int tempInt = (user.charArea().areasToSendX & areaX);
 			BitSet gral = new BitSet();
 			gral.set(tempInt);

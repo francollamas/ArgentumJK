@@ -150,7 +150,7 @@ public class WorkWatcher {
 	        userWatching.quitGame();
 	        
 	        // ban y ponemos la pena
-	        var sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 	        String reason = "CENTINELA : BAN POR MACRO INASISTIDO " + sdf.format(new java.util.Date());
 	        UserStorage.banUser(userName, "CENTINELA", reason);
 			UserStorage.addPunishment(userName, reason);
@@ -193,7 +193,7 @@ public class WorkWatcher {
 		// Reset del Centinela
 		// ############################################################
 		server.getUsers().stream().forEach(p -> {
-			if (p.isLogged() && !p.getUserName().isBlank() && p != userWatching) {
+			if (p.isLogged() && !p.getUserName().trim().equals("") && p != userWatching) {
 				p.getFlags().workWatcherRepliedOK = false;
 			}
 		});

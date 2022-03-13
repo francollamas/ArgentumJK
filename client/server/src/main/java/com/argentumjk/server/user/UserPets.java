@@ -53,7 +53,8 @@ public class UserPets {
 	}
 	
 	public void removeInvocationPets() {
-		List.copyOf(pets).forEach(pet -> {
+		List<Npc> n = new ArrayList<>(pets);
+		n.forEach(pet -> {
 			if (pet.isSpellSpawnedPet()) {
 				removePet(pet);
 				pet.quitarNPC();

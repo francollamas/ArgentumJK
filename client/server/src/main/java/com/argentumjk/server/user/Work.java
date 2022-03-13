@@ -303,7 +303,7 @@ public class Work {
 	}
 
     public void sendBlacksmithWeapons(User user) {
-    	var validWeapons = new ArrayList<BlacksmithWeapons_DATA>();
+		ArrayList<BlacksmithWeapons_DATA> validWeapons = new ArrayList<BlacksmithWeapons_DATA>();
     	for (short objid : getArmasHerrero()) {
             ObjectInfo info = findObj(objid);
             if (info.SkHerreria <= user.skillHerreriaEfectivo()) {
@@ -318,7 +318,7 @@ public class Work {
     }
  
     public void sendCarpenterObjects(User user) {
-    	var validObjects = new ArrayList<CarpenterObjects_DATA>();
+		ArrayList<CarpenterObjects_DATA> validObjects = new ArrayList<CarpenterObjects_DATA>();
     	for (short objid : getObjCarpintero()) {
             ObjectInfo info = findObj(objid);
             if (info.SkHerreria <= user.skillCarpinteriaEfectivo()) {
@@ -333,7 +333,7 @@ public class Work {
     }
 
     public void sendBlacksmithArmors(User user) {
-    	var validArmaduras = new ArrayList<BlacksmithArmors_DATA>();
+		ArrayList<BlacksmithArmors_DATA> validArmaduras = new ArrayList<BlacksmithArmors_DATA>();
     	for (short objid : getArmadurasHerrero()) {
             ObjectInfo info = findObj(objid);
             if (info.SkHerreria <= user.skillHerreriaEfectivo()) {

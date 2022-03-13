@@ -18,15 +18,9 @@
 package com.argentumjk.server.util;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.HashMap;
 import java.util.TreeSet;
 
@@ -50,8 +44,8 @@ public class IniFile {
 	public void store(String filename)
 			throws FileNotFoundException, IOException {
 
-		var fileHandle = Gdx.files.local(filename);
-		var f = fileHandle.writer(false, "ISO-8859-1");
+		FileHandle fileHandle = Gdx.files.local(filename);
+		Writer f = fileHandle.writer(false, "ISO-8859-1");
 
 		java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		try {
@@ -82,8 +76,8 @@ public class IniFile {
 	 */
 	public void load(String filename)
 			throws FileNotFoundException, IOException {
-		var fileHandle = Gdx.files.internal(filename);
-		var isr = new InputStreamReader(fileHandle.read(), "ISO-8859-1"); // "UTF-8"
+		FileHandle fileHandle = Gdx.files.internal(filename);
+		InputStreamReader isr = new InputStreamReader(fileHandle.read(), "ISO-8859-1"); // "UTF-8"
 
 		BufferedReader f = new BufferedReader(isr);
 		try {

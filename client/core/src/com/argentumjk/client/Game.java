@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.I18NBundle;
+import com.badlogic.gdx.utils.async.AsyncExecutor;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.kotcrab.vis.ui.VisUI;
 import com.argentumjk.client.connection.Connection;
@@ -25,6 +26,7 @@ import com.argentumjk.client.utils.Dialogs;
 import com.argentumjk.client.views.screens.CargaView;
 import com.argentumjk.client.views.screens.MenuView;
 import com.argentumjk.client.views.screens.View;
+import com.kotcrab.vis.ui.util.async.AsyncTask;
 
 import static com.argentumjk.client.general.FileNames.*;
 import static com.badlogic.gdx.Application.ApplicationType.*;
@@ -121,10 +123,10 @@ public class Game extends com.badlogic.gdx.Game {
 
         // TODO: reubicar... es para arrancar el server aqui mismo...
 
-        var th = new Thread(() -> GameServer.instance().runGameLoop());
-        th.start();
-
-        //GameServer.instance().runGameLoop();
+        new AsyncExecutor(4).submit(() -> {
+            GameServer.instance().runGameLoop();
+            return null;
+        });
 
         // Conexión
         connection = new GnConnection();

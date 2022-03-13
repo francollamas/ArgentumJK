@@ -40,7 +40,7 @@ public class HelpRequest {
 	public void askForHelpToGM(User user) {
 		// Comando /GM
 		// Pedir ayuda a los GMs.
-		var requests = helpRequests();
+		List<String> requests = helpRequests();
 		if (!requests.contains(user.getUserName())) {
 			requests.add(user.getUserName());
 			user.sendMessage("El mensaje ha sido entregado, ahora solo debes esperar que se desocupe algun GM.",

@@ -1,6 +1,7 @@
 package com.argentumjk.server.gm;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -79,7 +80,7 @@ public class ChangeMapInfo {
 			
 	        admin.sendMessage("Mapa " + map.getMapNumber() + " Zona: " + zone.get(), FontType.FONTTYPE_INFO);
 		} else {
-			var values = Arrays.stream(Zone.values()).map(Zone::toString).collect(Collectors.toList());
+			List<String> values = Arrays.stream(Zone.values()).map(Zone::toString).collect(Collectors.toList());
 			admin.sendMessage("Opciones válidas para Zona: " + values, FontType.FONTTYPE_INFO);
 			admin.sendMessage("NOTA: el único valor significante es 'DUNGEON', donde no hay efecto de lluvia.", 
 					FontType.FONTTYPE_INFO);
@@ -184,7 +185,7 @@ public class ChangeMapInfo {
 	        admin.sendMessage("Mapa " + map.getMapNumber() + " Restricción: " + constraint.toString(), 
 	        		FontType.FONTTYPE_INFO);
 		} else {
-			var values = String.join(", ", MapConstraint.getNames());
+			String values = String.join(", ", MapConstraint.getNames());
 			admin.sendMessage("Opciones válidas para Restricción: " + values, FontType.FONTTYPE_INFO);
 		}
 	}

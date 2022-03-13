@@ -18,12 +18,14 @@
 package com.argentumjk.server.net;
 
 import java.util.List;
+import java.util.Optional;
 
 
 ;
 import com.argentumjk.server.GameServer;
 import com.argentumjk.server.protocol.*;
 
+import com.argentumjk.server.user.User;
 import com.badlogic.gdx.Gdx;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -48,8 +50,8 @@ class RequestDecoder extends ReplayingDecoder<ClientPacket> {
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		Gdx.app.debug("Debug: ", "=> closed client connection");
-		var server = GameServer.instance();
-		var user = server.findUser(ctx.channel());
+		GameServer server = GameServer.instance();
+		Optional<User> user = server.findUser(ctx.channel());
 		if (user.isPresent()) {
 			user.get().quitGame();
 		}

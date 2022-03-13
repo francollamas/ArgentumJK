@@ -38,6 +38,7 @@ import com.badlogic.gdx.Gdx;
 import com.google.gson.Gson;
 import io.netty.channel.Channel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -2362,7 +2363,7 @@ public class User extends AbstractCharacter {
 
 	private void warpPets() {
 		// copy list first
-		var pets = getUserPets().getPets().stream().collect(Collectors.toList());
+		List<Npc> pets = getUserPets().getPets().stream().collect(Collectors.toList());
 
 		pets.forEach(pet -> {
 			if (pet.counters().TiempoExistencia > 0) {
@@ -3878,7 +3879,7 @@ public class User extends AbstractCharacter {
 	}
 	
 	public static boolean userExists(String userName) {
-		if (userName == null || userName.isBlank())
+		if (userName == null || userName.trim().equals(""))
 			return false;
 		return Util.fileExists(getPjFile(userName));
 	}
@@ -4329,7 +4330,7 @@ public class User extends AbstractCharacter {
 
 	private void checkSummonTimeout() {
 		// copy list of pets, to avoid concurrent issues
-		var pets = List.copyOf(getUserPets().getPets());
+		List<Npc> pets = new ArrayList<>(getUserPets().getPets());
 		pets.forEach(pet -> {
 			if (pet.counters().TiempoExistencia > 0) {
 				pet.counters().TiempoExistencia--;
@@ -4439,7 +4440,7 @@ public class User extends AbstractCharacter {
 	}
 
 	public String userNameTagDesc() {
-		var msg = new StringBuilder();
+		StringBuilder msg = new StringBuilder();
 		if (showName) {
 			msg.append(getUserName());
 			
@@ -4516,7 +4517,7 @@ public class User extends AbstractCharacter {
 		// Verifica si la raza puede usar esta ropa
 		boolean canUse = false;
 
-		var infoObj = findObj(objid);
+		ObjectInfo infoObj = findObj(objid);
 		switch (this.race) {
 			case RAZA_HUMAN:
 			case RAZA_ELF:

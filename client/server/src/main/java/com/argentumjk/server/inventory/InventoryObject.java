@@ -17,10 +17,7 @@
  *******************************************************************************/
 package com.argentumjk.server.inventory;
 
-import com.argentumjk.server.Constants;
-import com.argentumjk.server.GameServer;
-import com.argentumjk.server.ObjType;
-import com.argentumjk.server.ObjectInfo;
+import com.argentumjk.server.*;
 
 /**
  * @author gorlok
@@ -71,7 +68,7 @@ public class InventoryObject {
 	}
 
 	public ObjectInfo objInfo() {
-		var storage = GameServer.instance().getObjectInfoStorage();
+		ObjectInfoStorage storage = GameServer.instance().getObjectInfoStorage();
 		ObjectInfo info = storage.getInfoObjeto(this.objid);
 		return info;
 	}

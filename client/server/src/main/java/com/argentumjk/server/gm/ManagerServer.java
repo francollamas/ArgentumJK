@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.argentumjk.server.inventory.InventoryObject;
 import com.badlogic.gdx.Gdx;
 import com.argentumjk.server.Constants;
 import com.argentumjk.server.GameServer;
@@ -55,6 +56,7 @@ import com.argentumjk.server.util.FontType;
 import com.argentumjk.server.util.IniFile;
 import com.argentumjk.server.util.Log;
 import com.argentumjk.server.util.Util;
+import com.badlogic.gdx.files.FileHandle;
 
 public class ManagerServer {
 	
@@ -124,8 +126,8 @@ public class ManagerServer {
     	Gdx.app.log("Trace: ", "loading invalid names list");
         this.invalidNames.clear();
         try {
-			var fileName = Constants.DAT_DIR + File.separator + "NombresInvalidos.txt";
-			var fileHandle = Gdx.files.internal(fileName);
+			String fileName = Constants.DAT_DIR + File.separator + "NombresInvalidos.txt";
+			FileHandle fileHandle = Gdx.files.internal(fileName);
             BufferedReader f = new BufferedReader(
                 new InputStreamReader(
                     fileHandle.read()));
@@ -334,7 +336,7 @@ public class ManagerServer {
 		if (mapa == null) {
 			return;
 		}
-		var userNames = mapa.getUsers().stream()
+		List<String> userNames = mapa.getUsers().stream()
 				.filter(p -> !p.isGod())
 				.map(User::getUserName)
 				.collect(Collectors.toList());
@@ -352,7 +354,7 @@ public class ManagerServer {
 		}
 		
     	// Agrega un (*) al nombre del usuario que esté siendo monitoreado por el Centinela
-		var users = server.getUsers().stream()
+		List<String> users = server.getUsers().stream()
 			    	.filter(c -> c.isLogged() && c.hasUserName() && c.isWorking())
 			    	.map(p -> decorateUserName(p))
 			    	.collect(Collectors.toList());
@@ -369,8 +371,8 @@ public class ManagerServer {
 		if ( !admin.isGM() ) {
 			return;
 		}
-		
-		var users = server.getUsers().stream()
+
+		List<String> users = server.getUsers().stream()
 			    	.filter(c -> c.isLogged() && c.hasUserName() && c.isHidden()) // FIMXE c.counters().Ocultando > 0
 			    	.map(User::getUserName)
 			    	.collect(Collectors.toList());
@@ -382,8 +384,8 @@ public class ManagerServer {
 		if ( !admin.isGM() ) {
 			return;
 		}
-		
-		var users = server.getUsers().stream()
+
+		List<String> users = server.getUsers().stream()
 		    	.filter(c -> c.isLogged() && c.hasUserName() && c.isRoyalArmy())
 		    	.map(User::getUserName)
 		    	.collect(Collectors.toList());
@@ -396,7 +398,7 @@ public class ManagerServer {
 			return;
 		}
 
-		var users = server.getUsers().stream()
+		List<String> users = server.getUsers().stream()
 		    	.filter(c -> c.isLogged() && c.hasUserName() && c.isDarkLegion())
 		    	.map(User::getUserName)
 		    	.collect(Collectors.toList());
@@ -451,7 +453,8 @@ public class ManagerServer {
 		// wait a few seconds...
 		Util.sleep(5 * 1000);
 		try {
-			List.copyOf(server.getUsers()).forEach(p -> p.quitGame());
+			List<User> u = new ArrayList<>(server.getUsers());
+			u.forEach(User::quitGame);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -924,7 +927,7 @@ public class ManagerServer {
 			admin.sendMessage("No puedes encarcelar por mas de 60 minutos!", FontType.FONTTYPE_INFO);
 			return;
 		}
-        var sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		UserStorage.addPunishment(userName, admin.getUserName() + ">> /CARCEL " + reason + " " + sdf.format(new java.util.Date()));
 		user.sendToJail(minutes, admin.getUserName());
 	}
@@ -1010,7 +1013,7 @@ public class ManagerServer {
 		if (!admin.isGM()) {
 			return;
 		}
-		var gmsOnline = this.server.getGMsOnline();
+		List<String> gmsOnline = this.server.getGMsOnline();
 		if (gmsOnline.size() > 0) {
 			String gmsList = String.join("" + Constants.NULL_CHAR, gmsOnline);
 			admin.sendMessage("GM online: " + gmsList, FontType.FONTTYPE_INFO);
@@ -1404,7 +1407,7 @@ public class ManagerServer {
 			return;
 		}
 		Log.logGM(admin.getUserName(), "/LASTIP " + userName);
-		var ipList = user.userStorage.loadLastIPs();
+		List<String> ipList = user.userStorage.loadLastIPs();
 		admin.sendMessage("Últimas IP de " + userName + " son: " + String.join(", ", ipList), 
 				FontType.FONTTYPE_INFO);
 	}
@@ -1544,7 +1547,7 @@ public class ManagerServer {
 		}
 		Log.logGM(admin.getUserName(), "/PENAS " + userName);
 
-		var punishments = UserStorage.punishments(userName);
+		List<String> punishments = UserStorage.punishments(userName);
 		
 		if (punishments.isEmpty()) {
 			admin.sendMessage("Sin prontuario.", FontType.FONTTYPE_INFO);
@@ -1561,7 +1564,7 @@ public class ManagerServer {
 		if (!admin.isGM()) {
 			return;
 		}
-		if (userName == null || userName.isBlank() || reason == null || reason.isBlank()) {
+		if (userName == null || userName.trim().equals("") || reason == null || reason.trim().equals("")) {
 			admin.sendMessage("Utilice /advertencia nick@motivo", FontType.FONTTYPE_INFO);
 			return;
 		}
@@ -1581,7 +1584,7 @@ public class ManagerServer {
 		}
 		Log.logGM(admin.getUserName(), "/ADVERTENCIA " + userName);
 
-        var sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		UserStorage.addPunishment(userName, admin.getUserName() + ">> /ADVERTENCIA " + reason + " " + sdf.format(new java.util.Date()));
 	    admin.sendMessage("Has advertido a " + userName, FontType.FONTTYPE_INFO);
 	}
@@ -1591,7 +1594,7 @@ public class ManagerServer {
 		if (!admin.isGM()) {
 			return;
 		}
-		if (userName == null || userName.isBlank() || newText == null || newText.isBlank()) {
+		if (userName == null || userName.trim().equals("") || newText == null || newText.trim().equals("")) {
 			admin.sendMessage("Utilice /BORRARPENA Nick@NumeroDePena@NuevoTextoPena", FontType.FONTTYPE_INFO);
 			return;
 		}
@@ -1611,14 +1614,14 @@ public class ManagerServer {
 		}
 		Log.logGM(admin.getUserName(), "/BORRARPENA " + userName);
 
-        var punishments = UserStorage.punishments(userName);
+		List<String> punishments = UserStorage.punishments(userName);
         if (index < 1 || index > punishments.size()) {
         	admin.sendMessage("Número de pena inválido. Hay " + punishments.size() + " penas.", FontType.FONTTYPE_INFO);
         	admin.sendMessage("Utilice /BORRARPENA Nick@NumeroDePena@NuevoTextoPena", FontType.FONTTYPE_INFO);
         	return;
         }
-        
-        var sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		UserStorage.updatePunishment(userName, index, admin.getUserName() + ">> /ADVERTENCIA " + newText + " " + sdf.format(new java.util.Date()));
 	    admin.sendMessage("Has modificado una pena de " + userName, FontType.FONTTYPE_INFO);
 	}
@@ -1698,7 +1701,7 @@ public class ManagerServer {
 	public void bugReport(User user, String bugReport) {
 		final String fileName = Constants.LOG_DIR + File.separator + "BUGs.log";
 
-		var sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		StringBuilder sb = new StringBuilder();
 		sb.append("Usuario:")
 			.append(user.getUserName())
@@ -1755,7 +1758,7 @@ public class ManagerServer {
 			return;
 		}
 
-		if (userName == null || userName.isBlank() || newEmail == null || newEmail.isBlank()) { 
+		if (userName == null || userName.trim().equals("") || newEmail == null || newEmail.trim().equals("")) { 
 			admin.sendMessage("Usar /AEMAIL <pj>-<nuevomail>", FontType.FONTTYPE_INFO);
             return;
 		}
@@ -1779,7 +1782,7 @@ public class ManagerServer {
 			return;
 		}
 
-		if (userName == null || userName.isBlank() || newName == null || newName.isBlank()) { 
+		if (userName == null || userName.trim().equals("") || newName == null || newName.trim().equals("")) { 
 			admin.sendMessage("Usar: /ANAME nombreActual@nombreNuevo", FontType.FONTTYPE_INFO);
             return;
 		}
@@ -1809,8 +1812,8 @@ public class ManagerServer {
 			return;
 		}
 		admin.sendMessage("Transferencia exitosa", FontType.FONTTYPE_INFO);
-		
-		var sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		String reason = admin.getUserName() + ">> /BAN por cambio de nombre de " + userName + " a " + newName + ". " + sdf.format(new java.util.Date());
         
         UserStorage.banUser(userName, admin.getUserName(), reason);
@@ -1822,7 +1825,7 @@ public class ManagerServer {
 
 	public void roleMasterRequest(User user, String request) {
 		// command /ROL
-		if (request != null && !request.isBlank()) {
+		if (request != null && !request.trim().equals("")) {
             user.sendMessage("Su solicitud ha sido enviada", FontType.FONTTYPE_INFO);
             server.sendMessageToRoleMasters(user.getUserName() + " PREGUNTA ROL: " + request);
 		}
@@ -1965,7 +1968,7 @@ public class ManagerServer {
 				if (user.getUserInv().isEmpty(slot)) {
 					admin.sendMessage("No hay Objeto en el slot seleccionado.", FontType.FONTTYPE_INFO);
 				} else {
-					var obj = user.getUserInv().getObject(slot);
+					InventoryObject obj = user.getUserInv().getObject(slot);
 					admin.sendMessage(" Objeto (" + slot + ") " + obj.objInfo().Nombre 
 							+ " Cantidad:" + obj.cant, FontType.FONTTYPE_INFO);
 				}

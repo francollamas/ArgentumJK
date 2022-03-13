@@ -121,7 +121,7 @@ public class Inventory implements Iterable<InventoryObject> {
 			if (slot == 1) {
 				return;
 			}
-			var temp = objs[slot-1];
+            InventoryObject temp = objs[slot-1];
 			objs[slot-1] = objs[slot-2];
 			objs[slot-2] = temp;
 		} else {
@@ -129,7 +129,7 @@ public class Inventory implements Iterable<InventoryObject> {
 			if (slot == getSize()) {
 				return;
 			}
-			var temp = objs[slot-1];
+            InventoryObject temp = objs[slot-1];
 			objs[slot-1] = objs[slot];
 			objs[slot] = temp;
 		}

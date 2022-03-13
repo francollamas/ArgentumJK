@@ -214,8 +214,8 @@ public class GuildManager {
         if (guild.peacePropositions.isEmpty()) {
 			return;
 		}
-        
-        var sb = new StringBuilder();
+
+        StringBuilder sb = new StringBuilder();
         for (GuildRequest solicitud: guild.peacePropositions) {
         	sb.append(solicitud.getUserName())
         		.append(Constants.NULL_CHAR);
@@ -424,7 +424,7 @@ public class GuildManager {
     }
     
     private String guildRequestAsString(Guild guild) {
-        var requestsList = new StringBuilder();
+        StringBuilder requestsList = new StringBuilder();
         for (GuildRequest solicitud: guild.joinRequest) {
         	requestsList.append(solicitud.getUserName());
         	requestsList.append(Constants.NULL_CHAR);
@@ -436,14 +436,14 @@ public class GuildManager {
     }
     
     private String guildNewsAsString(Guild guild) {
-        var news = new StringBuilder()
+        StringBuilder news = new StringBuilder()
 		        .append(guild.guildNews)
 		        .append(Constants.NULL_CHAR);
     	return news.toString();
     }
 
     private String guildListAsString() {
-        var guildsList = new StringBuilder();
+        StringBuilder guildsList = new StringBuilder();
         for (Guild g: getGuilds()) {
             guildsList.append(g.guildName);
             guildsList.append(Constants.NULL_CHAR);
@@ -455,7 +455,7 @@ public class GuildManager {
 	}
 
 	private String memberListAsString(Guild guild) {
-    	var membersList = new StringBuilder();
+        StringBuilder membersList = new StringBuilder();
         for (String member: guild.members) {
         	membersList.append(member);
         	membersList.append(Constants.NULL_CHAR);        }
@@ -466,7 +466,7 @@ public class GuildManager {
     }
 
 	private String alliesListAsString(Guild guild) {
-    	var guilds = new StringBuilder();
+        StringBuilder guilds = new StringBuilder();
         for (String allied: guild.alliedGuilds) {
         	guilds.append(allied);
         	guilds.append(Constants.NULL_CHAR);        }
@@ -477,7 +477,7 @@ public class GuildManager {
     }
 
 	private String enemiesListAsString(Guild guild) {
-    	var guilds = new StringBuilder();
+        StringBuilder guilds = new StringBuilder();
         for (String allied: guild.enemyGuilds) {
         	guilds.append(allied);
         	guilds.append(Constants.NULL_CHAR);        }
@@ -584,7 +584,7 @@ public class GuildManager {
     }
 
     private void sendGuildsList(User user) {
-        var sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         for (Guild guild: getGuilds()) {
             sb.append(guild.guildName);
             sb.append(Constants.NULL_CHAR);
@@ -620,9 +620,9 @@ public class GuildManager {
 		if (guild == null) {
 			return;
 		}
-		
-		var codex = new StringBuilder();
-		for (var i = 0; i<guild.codexLength(); i++) {
+
+        StringBuilder codex = new StringBuilder();
+		for (int i = 0; i<guild.codexLength(); i++) {
 			codex.append(guild.getCodex(i))
 				.append(Constants.NULL_CHAR);
 		}

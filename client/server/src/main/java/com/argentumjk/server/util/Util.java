@@ -18,6 +18,7 @@
 package com.argentumjk.server.util;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 
 /**
  * @author gorlok
@@ -66,7 +67,7 @@ public class Util {
 	}
 
 	public static boolean fileExists(String fileName) {
-		var fileHandler = Gdx.files.local(fileName);
+		FileHandle fileHandler = Gdx.files.local(fileName);
 		return fileHandler.exists();
 	}
 	

@@ -17,6 +17,7 @@ import com.argentumjk.server.user.UserStorage;
 import com.argentumjk.server.util.FontType;
 import com.argentumjk.server.util.Log;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 
 public class BannIP {
 	
@@ -60,7 +61,7 @@ public class BannIP {
 			return;
 		}
 		server.sendMessageToAdmins(admin, admin.getUserName() + " /BAN a " + user.getUserName() + " por: " + reason, FontType.FONTTYPE_SERVER);
-        var sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		UserStorage.addPunishment(userName, admin.getUserName() + ">> /BAN por: " + reason + ". " + sdf.format(new java.util.Date()));
 		user.sendError("Has sido expulsado permanentemente del servidor.");
 		user.banned(admin.getUserName(), reason);
@@ -80,7 +81,7 @@ public class BannIP {
 			admin.sendMessage("No se puede perdonar, porque el usuario no está expulsado.", FontType.FONTTYPE_INFO);
 			return;			
 		}
-        var sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		UserStorage.addPunishment(userName, admin.getUserName() + ">> /UNBAN " + sdf.format(new java.util.Date()));
 		UserStorage.unBanUser(userName);
 		Log.logGM(admin.getUserName(), "/UNBAN a " + userName);
@@ -108,7 +109,7 @@ public class BannIP {
 		if (!admin.isGod() && !admin.isAdmin()) {
 			return;
 		}
-		var bannedIPs = getBannedIPs();
+		List<String> bannedIPs = getBannedIPs();
 		if (bannedIPs.contains(bannedIP)) {
 			admin.sendMessage("La IP " + bannedIP + " ya se encuentra en la lista de bans.", FontType.FONTTYPE_INFO);
 			return;
@@ -131,7 +132,7 @@ public class BannIP {
 			return;
 		}
 		Log.logGM(admin.getUserName(), "/UNBANIP " + bannedIP);
-		var bannedIPs = getBannedIPs();
+		List<String> bannedIPs = getBannedIPs();
 		if (bannedIPs.contains(bannedIP)) {
 			bannedIPs.remove(bannedIP);
 			saveBannedIPList();
@@ -171,8 +172,8 @@ public class BannIP {
 		final String fileName = Constants.DAT_DIR + File.separator + "BanIps.dat";
 		this.bannedIPs.clear();
 
-		var fileHandle = Gdx.files.internal(fileName);
-		var text = fileHandle.readString();
+		FileHandle fileHandle = Gdx.files.internal(fileName);
+		String text = fileHandle.readString();
 		String ips[] = text.split("\\r?\\n");
 		this.bannedIPs.addAll(Arrays.asList(ips));
 	}

@@ -22,14 +22,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import com.argentumjk.server.api.ManagerApi;
 import com.argentumjk.server.forum.ForumManager;
 import com.argentumjk.server.gm.BannIP;
 import com.argentumjk.server.gm.HelpRequest;
@@ -302,7 +297,7 @@ public class GameServer implements Constants {
     }
 
     public void echarPjsNoPrivilegiados() {
-    	var users = getUsers().stream()
+        List<User> users = getUsers().stream()
 			    	.filter(c -> c.isLogged() && c.hasUserName() && !c.getFlags().isGM())
 			    	.collect(Collectors.toList());
 
@@ -1045,7 +1040,7 @@ public class GameServer implements Constants {
     	SimpleDateFormat df_xml = new SimpleDateFormat("yyyyMMdd");
         SimpleDateFormat df_dia = new SimpleDateFormat("dd/MM/yyyy");
         SimpleDateFormat df_hora = new SimpleDateFormat("HH:mm:ss");
-        var fecha = new java.util.Date();
+        Date fecha = new java.util.Date();
         String dia = df_dia.format(fecha);
         String hora = df_hora.format(fecha);
         String filename = "logs" + File.separator + "stats-" + df_xml.format(fecha) + ".xml";
@@ -1065,7 +1060,7 @@ public class GameServer implements Constants {
     }
 
 	public ServerStatus serverStatus() {
-		var status = new ServerStatus();
+		ServerStatus status = new ServerStatus();
 		status.uptime = calculateUptime();
 		status.usersOnline = getUsuariosConectados().size();
 		status.memoryStatus = memoryStatus();

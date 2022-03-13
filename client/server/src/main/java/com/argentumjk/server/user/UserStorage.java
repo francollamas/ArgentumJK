@@ -418,7 +418,7 @@ public class UserStorage {
 				ini.setValue("HECHIZOS", "H" + slot, user.spells().getSpell(slot));
 			}
 
-			var pets = user.getUserPets().getPets();
+			List<Npc> pets = user.getUserPets().getPets();
 			int savedCount = 0;
 			for (Npc pet: pets) {
 				// Se guardan las mascotas que no fueron invocadas

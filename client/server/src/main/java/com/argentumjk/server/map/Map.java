@@ -58,6 +58,7 @@ import com.argentumjk.server.util.BytesReader;
 import com.argentumjk.server.util.FontType;
 import com.argentumjk.server.util.IniFile;
 import com.argentumjk.server.util.Util;
+import com.badlogic.gdx.files.FileHandle;
 
 /**
  * @author gorlok
@@ -303,7 +304,7 @@ public class Map implements Constants {
     	Gdx.app.log("Trace: ", "loading file " + datFileName);
         // Cargar informaci�n del archivo .dat
         IniFile ini = new IniFile();
-        var fileHandle = Gdx.files.internal(FOLDER_WORLDBACKUP + File.separator + datFileName);
+        FileHandle fileHandle = Gdx.files.internal(FOLDER_WORLDBACKUP + File.separator + datFileName);
 
         if (loadBackup && fileHandle.exists()) {
 			ini.load(FOLDER_WORLDBACKUP + File.separator + datFileName);
@@ -376,7 +377,7 @@ public class Map implements Constants {
     	String mapFileName = "Mapa" + this.mapNumber + ".map";
     	Gdx.app.log("Trace: ", "loading file " + mapFileName);
 
-        var fileHandle = Gdx.files.internal(FOLDER_WORLDBACKUP + File.separator + mapFileName);
+        FileHandle fileHandle = Gdx.files.internal(FOLDER_WORLDBACKUP + File.separator + mapFileName);
 	    if (!loadBackup || !fileHandle.exists()) {
 	    	fileHandle = Gdx.files.internal(FOLDER_MAPS + File.separator + mapFileName);
 	    }
@@ -389,7 +390,7 @@ public class Map implements Constants {
 	    
 	    try {
             int byflags = 0;
-            var reader = new BytesReader();
+            BytesReader reader = new BytesReader();
             reader.setBytes(bytes);
             
             // HEADER
@@ -448,7 +449,7 @@ public class Map implements Constants {
     	String infFileName = "Mapa" + this.mapNumber + ".inf";
     	Gdx.app.log("Trace: ", "load file " + infFileName);
 
-        var fileHandle = Gdx.files.internal(FOLDER_WORLDBACKUP + File.separator + infFileName);
+        FileHandle fileHandle = Gdx.files.internal(FOLDER_WORLDBACKUP + File.separator + infFileName);
         if (!loadBackup || !fileHandle.exists()) {
             fileHandle = Gdx.files.internal(FOLDER_MAPS + File.separator + infFileName);
         	if (!fileHandle.exists()) {
@@ -648,11 +649,11 @@ public class Map implements Constants {
 
     public void sendItemsInTheFloor(User admin) {
     	// List of objects by name
-    	var objects = new TreeMap<String, List<String>>();
+        TreeMap<String, List<String>> objects = new TreeMap<String, List<String>>();
     	for (int x = 5; x < MAP_WIDTH - 5; x++) {
     		for (int y = 5; y < MAP_HEIGHT - 5; y++) {
     			if (hasObject((byte)x, (byte)y)) {
-    				var oi = getObject((byte)x, (byte)y).objInfo();
+                    ObjectInfo oi = getObject((byte)x, (byte)y).objInfo();
     				if (oi.objType != ObjType.Arboles
     						&& oi.objType != ObjType.Llaves
     						&& oi.objType != ObjType.Carteles) {
@@ -1351,8 +1352,8 @@ public class Map implements Constants {
     
     public void sendCreaturesInMap(User admin) {
     	// List of creatures per npc name
-    	var hostiles = new TreeMap<String, List<Npc>>();
-    	var others = new TreeMap<String, List<Npc>>();
+        TreeMap<String, List<Npc>> hostiles = new TreeMap<String, List<Npc>>();
+        TreeMap<String, List<Npc>> others = new TreeMap<String, List<Npc>>();
     	
         for (Npc npc : this.npcs) {
             // �esta vivo?

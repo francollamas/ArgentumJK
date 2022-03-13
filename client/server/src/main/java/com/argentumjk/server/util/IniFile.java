@@ -78,12 +78,12 @@ public class IniFile {
 			throws FileNotFoundException, IOException {
 		FileHandle fileHandle = Gdx.files.internal(filename);
 		InputStreamReader isr = new InputStreamReader(fileHandle.read(), "ISO-8859-1"); // "UTF-8"
-
 		BufferedReader f = new BufferedReader(isr);
 		try {
 			loadFromFile(f);
 		} finally {
 			f.close();
+			isr.close();
 		}
 	}
 

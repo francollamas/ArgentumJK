@@ -17,6 +17,7 @@
  *******************************************************************************/
 package com.argentumjk.server.util;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
@@ -29,7 +30,7 @@ import java.util.TreeSet;
  */
 public class IniFile {
 
-	private HashMap<String, HashMap<String, String>> data = new HashMap<String, HashMap<String, String>>();
+	private HashMap<String, HashMap<String, String>> data = new HashMap<>();
 
 	/** Creates a new instance of IniFile */
 	public IniFile() {
@@ -37,12 +38,18 @@ public class IniFile {
 
 	/** Creates a new instance of IniFile */
 	public IniFile(String filename)
-			throws FileNotFoundException, IOException {
+			throws IOException {
 		load(filename);
 	}
 
+	/** Creates a new instance of IniFile */
+	public IniFile(String filename, Files.FileType fileType)
+			throws IOException {
+		load(filename, fileType);
+	}
+
 	public void store(String filename)
-			throws FileNotFoundException, IOException {
+			throws IOException {
 
 		FileHandle fileHandle = Gdx.files.local(filename);
 		Writer f = fileHandle.writer(false, "ISO-8859-1");
@@ -69,14 +76,26 @@ public class IniFile {
 
 	/**
 	 * Carga y parsea un archivo INI.
-	 * 
+	 *
 	 * @param filename Nombre del archivo ini
 	 * @throws FileNotFoundException Archivo no encontrado
 	 * @throws IOException           Error de E/S
 	 */
-	public void load(String filename)
+	public void load(String filename) throws IOException {
+		load(filename, Files.FileType.Internal);
+	}
+
+	/**
+	 * Carga y parsea un archivo INI.
+	 * 
+	 * @param filename Nombre del archivo ini
+	 * @param fileType Tipo de almacenamiento
+	 * @throws FileNotFoundException Archivo no encontrado
+	 * @throws IOException           Error de E/S
+	 */
+	public void load(String filename, Files.FileType fileType)
 			throws FileNotFoundException, IOException {
-		FileHandle fileHandle = Gdx.files.internal(filename);
+		FileHandle fileHandle = Gdx.files.getFileHandle(filename, fileType);
 		InputStreamReader isr = new InputStreamReader(fileHandle.read(), "ISO-8859-1"); // "UTF-8"
 		BufferedReader f = new BufferedReader(isr);
 		try {
@@ -88,7 +107,7 @@ public class IniFile {
 	}
 
 	private void loadFromFile(BufferedReader f)
-			throws FileNotFoundException, IOException {
+			throws IOException {
 		int corcheteCierre, separador, comentario;
 		String section = null, key = null, value = null;
 		String str = f.readLine();

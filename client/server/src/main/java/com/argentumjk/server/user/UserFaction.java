@@ -30,6 +30,7 @@ import com.argentumjk.server.npc.Npc;
 import com.argentumjk.server.util.FontType;
 import com.argentumjk.server.util.IniFile;
 import com.argentumjk.server.util.Log;
+import com.badlogic.gdx.Files;
 
 /**
  * @author gorlok
@@ -154,7 +155,7 @@ public class UserFaction implements Constants {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("FACCIONES", "EjercitoReal", 0);
 			ini.setValue("FACCIONES", "Reenlistadas", 200);
 			ini.setValue("FACCIONES", "Extra", "Expulsado por " + admin.getUserName());
@@ -168,7 +169,7 @@ public class UserFaction implements Constants {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("FACCIONES", "EjercitoCaos", 0);
 			ini.setValue("FACCIONES", "Reenlistadas", 200);
 			ini.setValue("FACCIONES", "Extra", "Expulsado por " + admin.getUserName());
@@ -182,7 +183,7 @@ public class UserFaction implements Constants {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("FACCIONES", "EjercitoReal", 0);
 			ini.setValue("FACCIONES", "CiudMatados", 0);
 			ini.setValue("FACCIONES", "CrimMatados", 0);

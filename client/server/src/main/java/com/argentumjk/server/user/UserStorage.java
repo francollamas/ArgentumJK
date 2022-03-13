@@ -26,7 +26,6 @@ import static com.argentumjk.server.Constants.OBJ_INDEX_CUERPO_MUERTO;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -46,7 +45,9 @@ import com.argentumjk.server.protocol.CharacterInfoResponse;
 import com.argentumjk.server.user.UserAttributes.Attribute;
 import com.argentumjk.server.util.IniFile;
 import com.argentumjk.server.util.Util;
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 
 public class UserStorage {
 	
@@ -65,7 +66,7 @@ public class UserStorage {
 	 */
 	public void loadUserFromStorage()
 	throws IOException {
-		IniFile ini = new IniFile(User.getPjFile(user.userName));
+		IniFile ini = new IniFile(User.getPjFile(user.userName), com.badlogic.gdx.Files.FileType.Local);
 		
 		loadUserInit(ini);
 		user.getStats().loadUserStats(ini);
@@ -86,7 +87,7 @@ public class UserStorage {
 	public void loadUserFromStorageOffline(String userName)
 	throws IOException {
 		user.userName = userName;
-		IniFile ini = new IniFile(User.getPjFile(user.getUserName()));
+		IniFile ini = new IniFile(User.getPjFile(user.getUserName()), Files.FileType.Local);
 		
 		loadUserInit(ini);
 		user.getStats().loadUserStats(ini);
@@ -106,7 +107,7 @@ public class UserStorage {
 	public static String passwordHashFromStorage(String userName) 
 	throws FileNotFoundException, IOException {
 		if (User.userExists(userName)) {
-			IniFile ini = new IniFile(User.getPjFile(userName));
+			IniFile ini = new IniFile(User.getPjFile(userName), Files.FileType.Local);
 			return ini.getString("INIT", "PasswordHash");
 		} else {
 			return null;
@@ -232,7 +233,7 @@ public class UserStorage {
 			return null;
 		}
 		try {
-			IniFile ini = new IniFile(User.getPjFile(userName));
+			IniFile ini = new IniFile(User.getPjFile(userName), Files.FileType.Local);
 			
 			Reputation tmpReputation = new Reputation();
 			tmpReputation.loadUserReputacion(ini);
@@ -445,12 +446,12 @@ public class UserStorage {
 	private void updateLastIp(IniFile ini) {
 		try {
 			List<String> lastIP = new ArrayList<>();
-			IntStream.range(1, 6).forEach(i -> {
+			for (int i = 1; i <= 6; i++) {
 				String ip = ini.getString("INIT", "LastIP" + i);
 				if (!ip.isEmpty()) {
 					lastIP.add(ip);
 				}
-			});
+			}
 			
 			if (lastIP.isEmpty() || lastIP.get(0).isEmpty() || !lastIP.get(0).equals(user.getIP())) {
 				lastIP.add(0, user.getIP());
@@ -458,14 +459,15 @@ public class UserStorage {
 					lastIP.remove(lastIP.size()-1);
 				}
 			}
-			
-			IntStream.range(1, 6).forEach(i -> {
+
+			for (int i = 1; i <= 5; i++) {
 				if (i <= lastIP.size()) {
 					ini.setValue("INIT", "LastIP" + i, lastIP.get(i-1));
 				} else {
 					ini.setValue("INIT", "LastIP" + i, "");
 				}
-			});
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -475,13 +477,13 @@ public class UserStorage {
 		List<String> lastIP = new ArrayList<>();
 		IniFile ini;
 		try {
-			ini = new IniFile(User.getPjFile(user.getUserName()));
-			IntStream.range(1, 6).forEach(i -> {
+			ini = new IniFile(User.getPjFile(user.getUserName()), Files.FileType.Local);
+			for (int i = 1; i <= 5 ; i++) {
 				String ip = ini.getString("INIT", "LastIP" + i);
 				if (!ip.isEmpty()) {
 					lastIP.add(ip);
 				}
-			});
+			}
 		} catch (IOException ignored) {
 		}
 		return lastIP;
@@ -489,7 +491,7 @@ public class UserStorage {
 
 	public static String emailFromStorage(String userName) 
 	throws FileNotFoundException, IOException {
-		IniFile ini = new IniFile(User.getPjFile(userName));
+		IniFile ini = new IniFile(User.getPjFile(userName), Files.FileType.Local);
 		
 		return ini.getString("CONTACTO", "Email");
 	}
@@ -498,11 +500,11 @@ public class UserStorage {
 		List<String> punishments = new ArrayList<>();
 		IniFile ini;
 		try {
-			ini = new IniFile(User.getPjFile(userName));
+			ini = new IniFile(User.getPjFile(userName), Files.FileType.Local);
 			int count = ini.getInt("PENAS", "Cant");
-			IntStream.range(1, count + 1).forEach(i -> {
+			for (int i = 1; i <= count; i++) {
 				punishments.add(ini.getString("PENAS", "P" + i));
-			});
+			}
 		} catch (IOException ignored) {
 		}
 		return punishments;
@@ -512,7 +514,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			int count = ini.getInt("PENAS", "Cant");
 			count++;
 			
@@ -528,7 +530,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			int count = ini.getInt("PENAS", "Cant");
 			if (index < 1 || index > count) {
 				return;
@@ -544,7 +546,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			return ini.getShort("FLAGS", "Ban") == 1;
 		} catch (IOException ignored) {
 		}
@@ -555,7 +557,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("BAN", "Banned", 1);
 			ini.setValue("BAN", "BannedBy", admin);
 			ini.setValue("BAN", "Reason", reason);
@@ -569,7 +571,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("BAN", "Banned", 0);
 			ini.setValue("BAN", "BannedBy", "");
 			ini.setValue("BAN", "Reason", "");
@@ -583,7 +585,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("CONTACTO", "Email", newEmail);    
 			
 			ini.store(fileName);
@@ -595,7 +597,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("INIT", "PasswordHash", newPasswordHash);
 			
 			ini.store(fileName);
@@ -607,7 +609,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			return ini.getString("Guild", "GuildName");
 		} catch (IOException ignored) {
 		}
@@ -615,16 +617,17 @@ public class UserStorage {
     }
 
 	public static void changeName(String userName, String newName) throws IOException {
-		Path original = Paths.get(User.getPjFile(userName));
-	    Path copied = Paths.get(User.getPjFile(newName));
-	    Files.copy(original, copied, StandardCopyOption.COPY_ATTRIBUTES);		
+		FileHandle fileHandle1 = Gdx.files.local(User.getPjFile(userName));
+		FileHandle fileHandle2 = Gdx.files.local(User.getPjFile(newName));
+		fileHandle1.copyTo(fileHandle2);
+		fileHandle1.delete();
 	}
 
     public static void councilKick(String userName) {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("CONSEJO", "PERTENECE", 0);
 			ini.setValue("CONSEJO", "PERTENECECAOS", 0);
 			
@@ -637,7 +640,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			int currentGold = ini.getInt("STATS", "BANCO");
 			currentGold += goldToAdd;
 			if (currentGold < 0) {
@@ -654,7 +657,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("STATS", "GLD", gold);
 			
 			ini.store(fileName);
@@ -666,7 +669,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			int currentExp = ini.getInt("STATS", "EXP");
 			currentExp += addedExp;
 			ini.setValue("STATS", "EXP", currentExp);
@@ -680,7 +683,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("STATS", "ELV", level);
 			
 			ini.store(fileName);
@@ -692,7 +695,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("FACCIONES", "CrimMatados", count);
 			
 			ini.store(fileName);
@@ -704,7 +707,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("FACCIONES", "CiudMatados", count);
 			
 			ini.store(fileName);
@@ -716,7 +719,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("Skills", "SK" + skill, value);
 			
 			ini.store(fileName);
@@ -728,7 +731,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("STATS", "SkillPtsLibres", value);
 			
 			ini.store(fileName);
@@ -740,7 +743,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("REP", "Nobles", value);
 			
 			ini.store(fileName);
@@ -753,7 +756,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("REP", "Asesino", value);
 			
 			ini.store(fileName);
@@ -765,7 +768,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("INIT", "Raza", race.id());
 			
 			ini.store(fileName);
@@ -777,7 +780,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("INIT", "Clase", clazz.id());
 			
 			ini.store(fileName);
@@ -789,7 +792,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("INIT", "Genero", gender.id());
 			
 			ini.store(fileName);
@@ -801,7 +804,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("INIT", "Body", bodyIndex);
 			
 			ini.store(fileName);
@@ -813,7 +816,7 @@ public class UserStorage {
 		final String fileName = User.getPjFile(userName);
 		IniFile ini;
 		try {
-			ini = new IniFile(fileName);
+			ini = new IniFile(fileName, Files.FileType.Local);
 			ini.setValue("INIT", "Head", headIndex);
 			
 			ini.store(fileName);

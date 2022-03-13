@@ -121,13 +121,6 @@ public class Game extends com.badlogic.gdx.Game {
         VisUI.load(assets.getGDXAssets().get(getSkinDir(), Skin.class));
         gameData = new GameData();
 
-        // TODO: reubicar... es para arrancar el server aqui mismo...
-
-        new AsyncExecutor(4).submit(() -> {
-            GameServer.instance().runGameLoop();
-            return null;
-        });
-
         // Conexión
         connection = new GnConnection();
 

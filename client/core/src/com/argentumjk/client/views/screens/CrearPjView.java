@@ -53,19 +53,19 @@ public class CrearPjView extends View {
                 tfNombre.setMaxLength(30);
 
                 newLabel(t, bu("cp.pass"), "col-title", "smallgradient").left().spaceBottom(0).row();
-                tfContraseña = newTextField(t, "", "", "bold", true).fill().getActor(); t.row();
+                tfContraseña = newTextField(t, "asdasd", "", "bold", true).fill().getActor(); t.row();
                 tfContraseña.setMaxLength(100);
 
                 newLabel(t, bu("cp.rpass"), "col-title", "smallgradient").left().spaceBottom(0).row();
-                tfRContraseña = newTextField(t, "", "", "bold", true).fill().getActor(); t.row();
+                tfRContraseña = newTextField(t, "asdasd", "", "bold", true).fill().getActor(); t.row();
                 tfRContraseña.setMaxLength(100);
 
                 newLabel(t, bu("cp.mail"), "col-title", "smallgradient").left().spaceBottom(0).row();
-                tfMail = newTextField(t, "", "", "bold").fill().getActor(); t.row();
+                tfMail = newTextField(t, "a@a.com", "", "bold").fill().getActor(); t.row();
                 tfMail.setMaxLength(100);
 
                 newLabel(t, bu("cp.rmail"), "col-title", "smallgradient").fill().left().spaceBottom(0).row();
-                tfRMail = newTextField(t, "", "", "bold").fill().getActor(); t.row();
+                tfRMail = newTextField(t, "a@a.com", "", "bold").fill().getActor(); t.row();
                 tfRMail.setMaxLength(100);
 
             Table t2 = newTable(w).top().padRight(40).getActor();

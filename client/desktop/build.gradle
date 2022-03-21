@@ -5,7 +5,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 sourceSets.main.java.srcDirs = [ "src" ]
-sourceSets.main.resources.srcDirs = [ '../assets', "res"]
+sourceSets.main.resources.srcDirs = [ '../assets', '../../server/assets', "res"]
 
 mainClassName = "com.argentumjk.client.desktop.DesktopLauncher"
 eclipse.project.name = appName + "-desktop"

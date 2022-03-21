@@ -1,2 +1,2 @@
-include 'desktop', 'android', 'ios', 'core', 'server'//, ':serverr'
-//project(":serverr").projectDir = file("../server/core")
+include 'desktop', 'android', 'ios', 'core', ':server'
+project(":server").projectDir = file("../server/server")

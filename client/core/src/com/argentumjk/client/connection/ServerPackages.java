@@ -682,7 +682,6 @@ public class ServerPackages {
         User u = getGD().getCurrentUser();
         getAssets().getMapa().getTile(x, y).setCharIndex(u.getIndexInServer());
 
-        // TODO ACT arreglar si o si.. es la POs
         Position cPos = getGD().getChars().getChar(u.getIndexInServer()).getPos();
         cPos.set(x, y);
 

@@ -44,6 +44,9 @@
 -keep class com.badlogic.** {*;}
 -keep class com.kotcrab.** {*;} # TODO: remove this when I remove VisUI
 -keep class com.ray3k.tenpatch.** { *; }
+-keep class io.netty.** { *; }
+-keep class com.google.** { *; }
+-keep class at.favre.** { *; }
 
 # Keep this if we need to use reflection in this project
 #-keepclassmembers class com.argentumjk.client.somepackage.** { void *(...); }

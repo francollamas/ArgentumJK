@@ -1,10 +1,12 @@
 package com.argentumjk.client.views.screens;
 
 import com.argentumjk.client.Game;
+import com.argentumjk.client.utils.Dialogs;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.widget.*;
 import com.argentumjk.client.managers.screens.MenuManager;
@@ -23,6 +25,7 @@ public class MenuView extends View {
     private VisTextButton tbCrearPj;
     private VisTextButton tbConfig;
     private VisTextButton tbEntrar;
+    private VisTextButton tbCredits;
 
     @Override
     public void show() {
@@ -33,9 +36,10 @@ public class MenuView extends View {
             Table t1 = newTable(w).padBottom(4).getActor(); w.row();
                 newLabel(t1, bu("mn.manage"), "col-title", "smallgradient").left().row();
                 tbCrearPj = newTextButton(t1, bu("mn.createchar")).fill().getActor(); t1.row();
-                newTextButton(t1, bu("mn.recoverchar")).fill().row();
-                newTextButton(t1, bu("mn.deletechar")).fill().row();
-                tbConfig = newTextButton(t1, bu("mn.config")).fill().getActor(); t1.row();
+                //newTextButton(t1, bu("mn.recoverchar")).fill().row();
+                //newTextButton(t1, bu("mn.deletechar")).fill().row();
+                //tbConfig = newTextButton(t1, bu("mn.config")).fill().getActor(); t1.row();
+                tbCredits = newTextButton(t1, bu("mn.credits")).fill().getActor(); t1.row();
 
             Table t2 = newTable(w).padTop(4).getActor();
                 newLabel(t2, bu("mn.login"), "col-title", "smallgradient").left().row();
@@ -66,11 +70,20 @@ public class MenuView extends View {
         });
 
         // Click del boton Configurar.
-        tbConfig.addListener(new ClickListener() {
+        // TODO tbConfig
+        /*tbConfig.addListener(new ClickListener() {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchUp(event, x, y, pointer, button);
                 setScreen(new ConfigView());
+            }
+        });*/
+
+        tbCredits.addListener(new ClickListener() {
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+                Dialogs.showOKDialog(Game.getInstance().getBundle().get("mn.credits"), "Thusing, Thorkes, Gorlok");
             }
         });
 

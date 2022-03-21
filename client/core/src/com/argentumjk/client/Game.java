@@ -2,6 +2,7 @@ package com.argentumjk.client;
 
 import com.argentumjk.client.general.EmptyMidiPlayer;
 import com.argentumjk.client.general.IMidiPlayer;
+import com.argentumjk.server.GameServer;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.I18NBundle;
+import com.badlogic.gdx.utils.async.AsyncExecutor;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.kotcrab.vis.ui.VisUI;
 import com.argentumjk.client.connection.Connection;
@@ -24,6 +26,7 @@ import com.argentumjk.client.utils.Dialogs;
 import com.argentumjk.client.views.screens.CargaView;
 import com.argentumjk.client.views.screens.MenuView;
 import com.argentumjk.client.views.screens.View;
+import com.kotcrab.vis.ui.util.async.AsyncTask;
 
 import static com.argentumjk.client.general.FileNames.*;
 import static com.badlogic.gdx.Application.ApplicationType.*;

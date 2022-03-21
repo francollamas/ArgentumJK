@@ -2,6 +2,9 @@ package com.argentumjk.client;
 
 import android.os.Bundle;
 
+import com.argentumjk.client.general.EmptyMidiPlayer;
+import com.argentumjk.client.implementations.AndroidMidiPlayer;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
@@ -10,6 +13,6 @@ public class AndroidLauncher extends AndroidApplication {
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		initialize(new Game(), config);
+		initialize(new Game(null, new AndroidMidiPlayer(getContext()), false), config);
 	}
 }

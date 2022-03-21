@@ -25,12 +25,15 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.argentumjk.server.Constants;
 import com.argentumjk.server.protocol.AddForumMsgResponse;
 import com.argentumjk.server.protocol.ShowForumFormResponse;
 import com.argentumjk.server.user.User;
+import com.argentumjk.server.util.Util;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 
 /**
  * @author gorlok
@@ -59,42 +62,25 @@ public class ForumManager {
 	private Forum loadForumFromFile(String forumId) {
 		String fileName = Constants.FORUM_DIR + File.separator + forumId + FORUM_EXT;
 
-		if (!Files.exists(Paths.get(fileName))) {
-			try {
-				Files.createFile(Paths.get(fileName));
-			} catch (IOException e) {
-				Gdx.app.error("Fatal: ", "Can't create forum file " + fileName, e);
-				return null;
-			}
+		FileHandle fileHandle = Gdx.files.local(fileName);
+		if (!fileHandle.exists()) {
+			fileHandle.writeString("", false);
 		}
-		
-		try {
-			List<String> lines = Files.readAllLines(Paths.get(fileName));
-			String jsonText = String.join("\n", lines);
-			return Forum.fromJson(jsonText);
-		} catch (IOException e) {
-			Gdx.app.error("Fatal: ", "Can't load forum file " + fileName, e);
-		}
-		return null;
+
+		List<String> lines = fileHandle.reader(100).lines().collect(Collectors.toList());
+		String jsonText = Util.join("\n", lines);
+		return Forum.fromJson(jsonText);
 	}
 
 	private void writeForumToFile(Forum forum) {
 		String fileName = Constants.FORUM_DIR + File.separator + forum.getForumId() + FORUM_EXT;
 
-		if (!Files.exists(Paths.get(fileName))) {
-			try {
-				Files.createFile(Paths.get(fileName));
-			} catch (IOException e) {
-				Gdx.app.error("Fatal: ", "Can't create forum file " + fileName, e);
-				return;
-			}
+		FileHandle fileHandle = Gdx.files.local(fileName);
+		if (!fileHandle.exists()) {
+			fileHandle.writeString("", false);
 		}
 
-	    try {
-			Files.write(Paths.get(fileName), forum.toJson().getBytes());
-		} catch (IOException e) {
-			Gdx.app.error("Fatal: ", "Can't write forum file " + fileName, e);
-		}
+		fileHandle.writeString(forum.toJson(), false);
 	}
 
 	public void postOnForum(String forumId, String title, String body, String userName) {

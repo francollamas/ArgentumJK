@@ -56,22 +56,23 @@ import io.netty.channel.Channel;
 
 /**
  * Server main class
+ *
  * @author gorlok
  */
 public class GameServer implements Constants {
-	
+
 
     private boolean useUPnP = false; // FIXME configure this
 
     private HashMap<Short, User> users = new HashMap<>();
     private HashMap<Short, Npc> npcs = new HashMap<>();
 
-	private List<User> usersToDrop = new LinkedList<>();
-	private List<Short> deadNpcs = new LinkedList<>();
+    private List<User> usersToDrop = new LinkedList<>();
+    private List<Short> deadNpcs = new LinkedList<>();
 
-	private List<Spell> spells = new LinkedList<>();
-	private List<Map> maps = new LinkedList<>();
-	private List<Quest> quests = new LinkedList<>();
+    private List<Spell> spells = new LinkedList<>();
+    private List<Map> maps = new LinkedList<>();
+    private List<Quest> quests = new LinkedList<>();
 
     private List<MapPos> trashCollector = new LinkedList<>();
 
@@ -80,7 +81,7 @@ public class GameServer implements Constants {
     boolean serverRestrictedToGMs = false;
     boolean createUserEnabled = true;
 
-	private short lastId = 0;
+    private short lastId = 0;
 
     boolean raining = false;
 
@@ -120,40 +121,41 @@ public class GameServer implements Constants {
     private long lastPurgarPenas;
     private long lastCheckIdleUser;
     private long lastPassMinuteTimer;
-    
+
     private static GameServer instance = null;
+
     public synchronized static GameServer instance() {
-    	if (instance == null) {
-    		instance = new GameServer();
-    	}
-    	return instance;
+        if (instance == null) {
+            instance = new GameServer();
+        }
+        return instance;
     }
 
     private GameServer() {
-    	// start API management server
+        // start API management server
         // TODO GDX: fixear ManagerAPI
-    	//new ManagerApi(this);
-    	
-    	// start network game server
-    	this.ns = new NetworkServer(Constants.SERVER_PORT);
-    	
-    	// initialize game server
-    	this.guildManager = new GuildManager(this);
-    	this.motd = new Motd();
-    	this.forumManager = new ForumManager();
-    	this.npcLoader = new NpcLoader(this);
-    	this.manager = new ManagerServer(this);
-    	this.objectInfoStorage = new ObjectInfoStorage();
-    	this.gamblerStats = new GamblerStats();
-    	this.workWatcher = new WorkWatcher(this);
-    	this.bannIP = new BannIP(this);
-    	this.helpRequest = new HelpRequest(this);
-    	this.work = new Work(this);
+        //new ManagerApi(this);
+
+        // start network game server
+        this.ns = new NetworkServer(Constants.SERVER_PORT);
+
+        // initialize game server
+        this.guildManager = new GuildManager(this);
+        this.motd = new Motd();
+        this.forumManager = new ForumManager();
+        this.npcLoader = new NpcLoader(this);
+        this.manager = new ManagerServer(this);
+        this.objectInfoStorage = new ObjectInfoStorage();
+        this.gamblerStats = new GamblerStats();
+        this.workWatcher = new WorkWatcher(this);
+        this.bannIP = new BannIP(this);
+        this.helpRequest = new HelpRequest(this);
+        this.work = new Work(this);
     }
-    
+
     private void init() {
         this.startTime = System.currentTimeMillis();
-        
+
         this.lastPasarSegundoTimer = this.startTime;
         this.lastNpcAI = this.startTime;
         this.lastFX = this.startTime;
@@ -166,98 +168,98 @@ public class GameServer implements Constants {
         this.lastPurgarPenas = this.startTime;
         this.lastCheckIdleUser = this.startTime;
         this.lastPassMinuteTimer = this.startTime;
-        
+
         this.running = true;
     }
-    
+
     public WorkWatcher getWorkWatcher() {
-		return workWatcher;
-	}
-    
+        return workWatcher;
+    }
+
     public GamblerStats getGamblerStats() {
-		return this.gamblerStats;
-	}
+        return this.gamblerStats;
+    }
 
     public ObjectInfoStorage getObjectInfoStorage() {
-		return this.objectInfoStorage;
-	}
+        return this.objectInfoStorage;
+    }
 
     public ManagerServer manager() {
-		return this.manager;
-	}
+        return this.manager;
+    }
 
     public Motd motd() {
-    	return this.motd;
+        return this.motd;
     }
 
     public GuildManager getGuildMngr() {
-    	return this.guildManager;
+        return this.guildManager;
     }
 
     public ForumManager getForumManager() {
-		return this.forumManager;
-	}
-    
+        return this.forumManager;
+    }
+
     public BannIP getBannIP() {
-		return this.bannIP;
-	}
-    
+        return this.bannIP;
+    }
+
     public Work getWork() {
-		return work;
-	}
+        return work;
+    }
 
     public NpcLoader getNpcLoader() {
-		return this.npcLoader;
-	}
-    
+        return this.npcLoader;
+    }
+
     public HelpRequest getHelpRequest() {
-		return helpRequest;
-	}
+        return helpRequest;
+    }
 
     public List<User> getUsers() {
-    	return this.users.values().stream()
-    			.collect(Collectors.toList());
+        return this.users.values().stream()
+                .collect(Collectors.toList());
     }
 
     public List<Npc> getNpcs() {
-    	return new ArrayList<>(this.npcs.values());
+        return new ArrayList<>(this.npcs.values());
     }
 
     public long runningTimeInSecs() {
         return (System.currentTimeMillis() - this.startTime) / 1000;
     }
-    
-	public ObjectInfo findObj(int oid) {
-		return getObjectInfoStorage().getInfoObjeto(oid);
-	}
 
-	public String calculateUptime() {
-		long tsegs = runningTimeInSecs();
-		long segs = tsegs % 60;
-		long mins = tsegs / 60;
-		long horas = mins / 60;
-		long dias = horas / 24;
+    public ObjectInfo findObj(int oid) {
+        return getObjectInfoStorage().getInfoObjeto(oid);
+    }
 
-		return new StringBuilder()
-			.append(dias)
-			.append("d ")
-			.append(horas)
-			.append("h ")
-			.append(mins)
-			.append("m ")
-			.append(segs)
-			.append("s").toString();
-	}
+    public String calculateUptime() {
+        long tsegs = runningTimeInSecs();
+        long segs = tsegs % 60;
+        long mins = tsegs / 60;
+        long horas = mins / 60;
+        long dias = horas / 24;
+
+        return new StringBuilder()
+                .append(dias)
+                .append("d ")
+                .append(horas)
+                .append("h ")
+                .append(mins)
+                .append("m ")
+                .append(segs)
+                .append("s").toString();
+    }
 
     public short nextId() {
-    	do { 
-    		this.lastId++;
-    		if (this.lastId < 0) {
-    			// just in case, Java's short type is signed
-    			this.lastId = 1;
-    		}
-    	} while (users.containsKey(this.lastId) || npcs.containsKey(this.lastId));
-    	
+        do {
+            this.lastId++;
+            if (this.lastId < 0) {
+                // just in case, Java's short type is signed
+                this.lastId = 1;
+            }
+        } while (users.containsKey(this.lastId) || npcs.containsKey(this.lastId));
+
         return this.lastId;
     }
 
@@ -282,29 +284,29 @@ public class GameServer implements Constants {
     }
 
     public boolean isShowDebug() {
-    	return this.showDebug;
+        return this.showDebug;
     }
 
     public void setShowDebug(boolean value) {
-    	this.showDebug = value;
+        this.showDebug = value;
     }
 
     public List<String> getUsuariosConectados() {
-    	return getUsers().stream()
-			    	.filter(c -> c.isLogged() && c.hasUserName() && !c.getFlags().isGM())
-			    	.map(User::getUserName)
-			    	.collect(Collectors.toList());
+        return getUsers().stream()
+                .filter(c -> c.isLogged() && c.hasUserName() && !c.getFlags().isGM())
+                .map(User::getUserName)
+                .collect(Collectors.toList());
     }
 
     public void echarPjsNoPrivilegiados() {
         List<User> users = getUsers().stream()
-			    	.filter(c -> c.isLogged() && c.hasUserName() && !c.getFlags().isGM())
-			    	.collect(Collectors.toList());
+                .filter(c -> c.isLogged() && c.hasUserName() && !c.getFlags().isGM())
+                .collect(Collectors.toList());
 
-    	users.forEach(c -> {
-	    	c.sendMessage("Servidor> Conexiones temporalmente cerradas por mantenimiento.", FontType.FONTTYPE_SERVER);
-	        c.quitGame();
-    	});
+        users.forEach(c -> {
+            c.sendMessage("Servidor> Conexiones temporalmente cerradas por mantenimiento.", FontType.FONTTYPE_SERVER);
+            c.quitGame();
+        });
     }
 
     public void shutdown() {
@@ -315,56 +317,58 @@ public class GameServer implements Constants {
     }
 
     public List<String> getUsuariosConIP(String ip) {
-    	return getUsers().stream()
-		    	.filter(c -> c.isLogged() && c.hasUserName() && c.getIP().equals(ip))
-		    	.map(User::getUserName)
-		    	.collect(Collectors.toList());
+        return getUsers().stream()
+                .filter(c -> c.isLogged() && c.hasUserName() && c.getIP().equals(ip))
+                .map(User::getUserName)
+                .collect(Collectors.toList());
     }
 
     public List<String> getGMsOnline() {
-    	return getUsers().stream()
-		    	.filter(c -> c.isLogged() && c.hasUserName() && c.getFlags().isGM())
-		    	.map(User::getUserName)
-		    	.collect(Collectors.toList());
+        return getUsers().stream()
+                .filter(c -> c.isLogged() && c.hasUserName() && c.getFlags().isGM())
+                .map(User::getUserName)
+                .collect(Collectors.toList());
     }
 
     public boolean isLoadBackup() {
-		return loadBackup;
-	}
+        return loadBackup;
+    }
 
     public boolean isServerRestrictedToGMs() {
-		return serverRestrictedToGMs;
-	}
-    
-    public void setServerRestrictedToGMs(boolean serverRestrictedToGMs) {
-		this.serverRestrictedToGMs = serverRestrictedToGMs;
-	}
-    
-	public void serverRestrictedToGMsToggle() {
-		this.serverRestrictedToGMs = !this.serverRestrictedToGMs;
-	}
-	
-	public boolean isCreateUserEnabled() {
-		return createUserEnabled;
-	}
-	
-	public void setCreateUserEnabled(boolean createUserEnabled) {
-		this.createUserEnabled = createUserEnabled;
-	}
+        return serverRestrictedToGMs;
+    }
 
-    /** Main loop of the game. */
+    public void setServerRestrictedToGMs(boolean serverRestrictedToGMs) {
+        this.serverRestrictedToGMs = serverRestrictedToGMs;
+    }
+
+    public void serverRestrictedToGMsToggle() {
+        this.serverRestrictedToGMs = !this.serverRestrictedToGMs;
+    }
+
+    public boolean isCreateUserEnabled() {
+        return createUserEnabled;
+    }
+
+    public void setCreateUserEnabled(boolean createUserEnabled) {
+        this.createUserEnabled = createUserEnabled;
+    }
+
+    /**
+     * Main loop of the game.
+     */
     public void runGameLoop() {
         loadAll(loadBackup);
 
         init();
         try {
-        	if (this.useUPnP) {
-        		NetworkUPnP.openUPnP();
-        	}
+            if (this.useUPnP) {
+                NetworkUPnP.openUPnP();
+            }
             while (this.running) {
                 fps++;
                 long now = System.currentTimeMillis();
-                
+
                 npcAiTimer(now);
                 soundFxTimer(now);
                 gameTimer(now);
@@ -377,12 +381,12 @@ public class GameServer implements Constants {
                 checkIdleUserTimer(now);
                 passMinuteTimer(now);
                 passSecondTimer(now);
-                
+
                 removeDroppedUsers();
 
                 long ellapsed = System.currentTimeMillis() - now;
                 if (ellapsed > worstTime) {
-                	worstTime = ellapsed;
+                    worstTime = ellapsed;
                 }
                 long wait = (1000 - ellapsed);
                 if (wait < 0) wait = 1;
@@ -398,35 +402,45 @@ public class GameServer implements Constants {
     }
 
     public synchronized void dropUser(User user) {
-    	user.closeConnection();
-    	this.usersToDrop.add(user);
+        user.closeConnection();
+        this.usersToDrop.add(user);
     }
 
     private synchronized void removeDroppedUsers() {
-    	// Se hace aqui para evitar problemas de concurrencia
-    	this.usersToDrop.stream().forEach(u -> this.users.remove(u.getId()));
-    	this.usersToDrop.clear();
+        // Se hace aqui para evitar problemas de concurrencia
+        this.usersToDrop.stream().forEach(u -> this.users.remove(u.getId()));
+        this.usersToDrop.clear();
     }
 
     private static String memoryStatus() {
-    	return  "total " + (int) (Runtime.getRuntime().totalMemory() / 1024) +
-    			"KB free " + (int) (Runtime.getRuntime().freeMemory() / 1024) +
-				"KB";
+        return "total " + (int) (Runtime.getRuntime().totalMemory() / 1024) +
+                "KB free " + (int) (Runtime.getRuntime().freeMemory() / 1024) +
+                "KB";
     }
-    
+
     private void loadMaps(boolean loadBackup) {
-    	Gdx.app.log("Trace: ", "loading maps");
+        Gdx.app.log("Trace: ", "loading maps");
         this.maps = new ArrayList<>(CANT_MAPAS);
         Map mapa;
-        for (short i = 1; i <= CANT_MAPAS; i++) {
-            mapa = new Map(i, this);
-            mapa.load(loadBackup);
-            this.maps.add(mapa);
+        short i = 0;
+        try {
+            for (i = 1; i <= CANT_MAPAS; i++) {
+                mapa = new Map(i, this);
+                mapa.load(loadBackup);
+                this.maps.add(mapa);
+            }
+        } catch (java.io.FileNotFoundException e) {
+            Gdx.app.log("Warn: ", "Archivo de mapa %d faltante." + i);
+        } catch (java.io.IOException e) {
+            Gdx.app.log("Warn: ", "Error leyendo archivo de mapa %d" + i);
+        } catch (Exception e) {
+            Gdx.app.log("Warn: ", "Error con mapa " + i, e);
         }
+
     }
 
     private void loadSpells() {
-    	Gdx.app.log("Trace: ", "loading spells");
+        Gdx.app.log("Trace: ", "loading spells");
         IniFile ini = new IniFile();
         try {
             ini.load(DAT_DIR + File.separator + "Hechizos.dat");
@@ -439,14 +453,14 @@ public class GameServer implements Constants {
 
         this.spells = new ArrayList<>(cant);
         for (int i = 0; i < cant; i++) {
-            Spell hechizo = new Spell(i+1);
-        	hechizo.load(ini);
+            Spell hechizo = new Spell(i + 1);
+            hechizo.load(ini);
             this.spells.add(hechizo);
         }
     }
 
     private void loadQuests() {
-    	Gdx.app.log("Trace: ", "loading quests");
+        Gdx.app.log("Trace: ", "loading quests");
         IniFile ini = new IniFile();
         try {
             ini.load(DAT_DIR + File.separator + "Quests.dat");
@@ -464,9 +478,11 @@ public class GameServer implements Constants {
         }
     }
 
-    /** Load all initial data */
+    /**
+     * Load all initial data
+     */
     private void loadAll(boolean loadBackup) {
-    	Gdx.app.log("Trace:", "loadAllData started");
+        Gdx.app.log("Trace:", "loadAllData started");
         this.objectInfoStorage.loadObjectsFromStorage();
         loadSpells();
         loadMaps(loadBackup);
@@ -490,20 +506,20 @@ public class GameServer implements Constants {
     public void createUser(Channel channel) {
         User user = new User(this);
         user.setChannel(channel);
-        
+
         if (getBannIP().isIpBanned(user.getIP())) {
-        	user.sendError("Su IP se encuentra bloqueada en este servidor.");
-        	user.quitGame();
-        	return;
+            user.sendError("Su IP se encuentra bloqueada en este servidor.");
+            user.quitGame();
+            return;
         }
-        
+
         this.users.put(user.getId(), user);
     }
 
     public Optional<User> findUser(Channel channel) {
-    	return this.users.values().stream()
-		    		.filter(p -> p.getChannel() == channel)
-		    		.findFirst();
+        return this.users.values().stream()
+                .filter(p -> p.getChannel() == channel)
+                .findFirst();
     }
 
     public void deleteNpc(Npc npc) {
@@ -524,53 +540,53 @@ public class GameServer implements Constants {
 
     public Map getMap(int map) {
         if (map > 0 && map <= this.maps.size()) {
-			return this.maps.get(map - 1);
-		}
-		return null;
+            return this.maps.get(map - 1);
+        }
+        return null;
     }
-    
+
     public User userByName(String userName) {
-    	if ("".equals(userName)) {
-			return null;
-		}
-    	
-    	Optional<User> founded = getUsers().stream()
-    		.filter(u -> userName.equalsIgnoreCase(u.getUserName()))
-    		.findFirst();
-    	
-    	return founded.isPresent() ? founded.get() : null;
+        if ("".equals(userName)) {
+            return null;
+        }
+
+        Optional<User> founded = getUsers().stream()
+                .filter(u -> userName.equalsIgnoreCase(u.getUserName()))
+                .findFirst();
+
+        return founded.isPresent() ? founded.get() : null;
     }
 
     public boolean isUserAlreadyConnected(String userName) {
-    	User foundedUser = userByName(userName);
-    	return foundedUser != null &&
-    			userName.equalsIgnoreCase(foundedUser.getUserName());
+        User foundedUser = userByName(userName);
+        return foundedUser != null &&
+                userName.equalsIgnoreCase(foundedUser.getUserName());
     }
 
     private void npcAiTimer(long now) {
         // TIMER_AI_Timer()
         if ((now - lastNpcAI) > 400) {
             lastNpcAI = now;
-    	
-	        if (!this.doingBackup) {
-	            getNpcs().stream()
-	            	.filter(npc -> npc.isNpcActive() && !npc.isStatic())
-	            	.forEach(npc -> {
-		                if (npc.isParalized()) {
-		                    npc.efectoParalisisNpc();
-		                } else {
-		                    // Usamos AI si hay algun user en el mapa
-		                    if (npc.pos().isValid()) {
-		                        Map map = getMap(npc.pos().map);
-		                        if (map != null && map.getUsersCount() > 0) {
-	                                npc.doAI();
-		                        }
-		                    }
-		                }
-	            	});
-		        this.deadNpcs.stream().map(npcId -> this.npcs.remove(npcId));
-		        this.deadNpcs.clear();
-	        }
+
+            if (!this.doingBackup) {
+                getNpcs().stream()
+                        .filter(npc -> npc.isNpcActive() && !npc.isStatic())
+                        .forEach(npc -> {
+                            if (npc.isParalized()) {
+                                npc.efectoParalisisNpc();
+                            } else {
+                                // Usamos AI si hay algun user en el mapa
+                                if (npc.pos().isValid()) {
+                                    Map map = getMap(npc.pos().map);
+                                    if (map != null && map.getUsersCount() > 0) {
+                                        npc.doAI();
+                                    }
+                                }
+                            }
+                        });
+                this.deadNpcs.stream().map(npcId -> this.npcs.remove(npcId));
+                this.deadNpcs.clear();
+            }
         }
     }
 
@@ -578,44 +594,44 @@ public class GameServer implements Constants {
         if ((now - lastPasarSegundoTimer) > 1000) { // 1 vez x segundo
 //        	System.out.format("fps: %2d   max-time: %3dms    online: %3d    gm: %3d\n", 
 //        			fps, worstTime, getUsuariosConectados().size(), getGMsOnline().size());
-        	fps = 0;
-        	worstTime = 0;
+            fps = 0;
+            worstTime = 0;
             lastPasarSegundoTimer = now;
-	        List<User> readyToQuit = new LinkedList<>();
-	        
-	        getUsers().stream().forEach(u -> {
-	            if (u.getCounters().Saliendo) {
-	                u.getCounters().SalirCounter--;
-	                if (u.getCounters().SalirCounter <= 0) {
-	                    readyToQuit.add(u);
-	                } else {
-	                	switch (u.getCounters().SalirCounter) {
-	                		case 10:
-	                			u.sendMessage("En " + u.getCounters().SalirCounter +" segundos se cerrar� el juego...", FontType.FONTTYPE_INFO);
-	                			break;
-	                		case 3:
-	                			u.sendMessage("Gracias por jugar Argentum Online. Vuelve pronto.", FontType.FONTTYPE_INFO);
-	                			break;
-	                	}
-	                }
-	            }
-	        });
-	        readyToQuit.stream().forEach(User::quitGame);
-	        
-	        getWorkWatcher().passSecond();
+            List<User> readyToQuit = new LinkedList<>();
+
+            getUsers().stream().forEach(u -> {
+                if (u.getCounters().Saliendo) {
+                    u.getCounters().SalirCounter--;
+                    if (u.getCounters().SalirCounter <= 0) {
+                        readyToQuit.add(u);
+                    } else {
+                        switch (u.getCounters().SalirCounter) {
+                            case 10:
+                                u.sendMessage("En " + u.getCounters().SalirCounter + " segundos se cerrar� el juego...", FontType.FONTTYPE_INFO);
+                                break;
+                            case 3:
+                                u.sendMessage("Gracias por jugar Argentum Online. Vuelve pronto.", FontType.FONTTYPE_INFO);
+                                break;
+                        }
+                    }
+                }
+            });
+            readyToQuit.stream().forEach(User::quitGame);
+
+            getWorkWatcher().passSecond();
         }
     }
 
     public void saveUsers() {
         this.doingBackup = true;
-    	getUsers().stream()
-    		.filter(User::isLogged)
-    		.forEach(User::saveUser);
+        getUsers().stream()
+                .filter(User::isLogged)
+                .forEach(User::saveUser);
         this.doingBackup = false;
     }
 
     private void loadCities() {
-    	Gdx.app.log("Trace: ", "loading cities");
+        Gdx.app.log("Trace: ", "loading cities");
         try {
             IniFile ini = new IniFile(DAT_DIR + File.separator + "Ciudades.dat");
             this.cities = new MapPos[City.values().length];
@@ -629,12 +645,12 @@ public class GameServer implements Constants {
         }
     }
 
-	private void loadCity(IniFile ini, City ciudad, String section) {
-		this.cities[ciudad.id()] = 
-				MapPos.mxy(ini.getShort(section, "MAPA"), 
-						ini.getShort(section, "X"), 
-						ini.getShort(section, "Y"));
-	}
+    private void loadCity(IniFile ini, City ciudad, String section) {
+        this.cities[ciudad.id()] =
+                MapPos.mxy(ini.getShort(section, "MAPA"),
+                        ini.getShort(section, "X"),
+                        ini.getShort(section, "Y"));
+    }
 
     public MapPos getCiudadPos(City ciudad) {
         return this.cities[ciudad.id()];
@@ -644,31 +660,31 @@ public class GameServer implements Constants {
         if ((now - lastFX) > 200) {
             lastFX = now;
             maps.stream()
-            	.filter(Map::isHasUsers)
-            	.forEach(m -> {
-            		if (Util.random(1, 150) < 12) {
-            			m.soundFx();
-            		}
-            	});
+                    .filter(Map::isHasUsers)
+                    .forEach(m -> {
+                        if (Util.random(1, 150) < 12) {
+                            m.soundFx();
+                        }
+                    });
         }
     }
 
     private void gameTimer(long now) {
-    	// This is like GameTimer_Timer
-    	// <<<<<< Procesa eventos de los usuarios >>>>>>
+        // This is like GameTimer_Timer
+        // <<<<<< Procesa eventos de los usuarios >>>>>>
         if ((now - lastGameTimer) > 40) {
             lastGameTimer = now;
-            
+
             getUsers().stream()
-            	.filter(User::hasId)
-            	.forEach(User::procesarEventos);
+                    .filter(User::hasId)
+                    .forEach(User::procesarEventos);
         }
     }
 
     private void npcAtacaTimer(long now) {
         if ((now - lastNpcAtacaTimer) > 2000) {
             lastNpcAtacaTimer = now;
-    	
+
             getNpcs().stream().forEach(Npc::startAttacking);
         }
     }
@@ -676,40 +692,40 @@ public class GameServer implements Constants {
     private void hiddingTimer(long now) {
         if ((now - lastTimerOculto) > 3_000) {
             lastTimerOculto = now;
-            
+
             getUsers().stream()
-            	.filter(User::hasId)
-            	.filter(User::isHidden)
-            	.forEach(User::updateHiding);
+                    .filter(User::hasId)
+                    .filter(User::isHidden)
+                    .forEach(User::updateHiding);
         }
     }
 
     private void rainingEffectTimer(long now) {
-    	if (!this.raining) {
-    		return;
-    	}
+        if (!this.raining) {
+            return;
+        }
         if ((now - lastLluviaTimer) > 1500) {
             lastLluviaTimer = now;
 
             getUsers().stream()
-            	.filter(User::hasId)
-            	.forEach(User::rainingEffect);
+                    .filter(User::hasId)
+                    .forEach(User::rainingEffect);
         }
     }
 
     public void sendToAll(ServerPacket packet) {
-    	getUsers().stream()
-	    	.filter(User::hasId)
-	    	.filter(User::isLogged)
-	    	.forEach(u -> u.sendPacket(packet));
+        getUsers().stream()
+                .filter(User::hasId)
+                .filter(User::isLogged)
+                .forEach(u -> u.sendPacket(packet));
     }
 
     public void sendToAdmins(ServerPacket packet) {
-    	getUsers().stream()
-	    	.filter(User::hasId)
-	    	.filter(User::isLogged)
-	    	.filter(User::isGM)
-	    	.forEach(u -> u.sendPacket(packet));
+        getUsers().stream()
+                .filter(User::hasId)
+                .filter(User::isLogged)
+                .filter(User::isGM)
+                .forEach(u -> u.sendPacket(packet));
     }
 
     long minutosLloviendo = 0;
@@ -730,60 +746,60 @@ public class GameServer implements Constants {
     private void rainEventTimer(long now) {
         if ((now - lastEventTimer) > 60_000) {
             lastEventTimer = now;
-    	
-	        if (!this.raining) {
-	            this.minutosSinLluvia++;
-	            if (this.minutosSinLluvia >= 15 && this.minutosSinLluvia < 1440) {
-	                if (Util.random(1, 100) <= 10) {
-	                    rainStart();
-	                }
-	            } else if (this.minutosSinLluvia >= 1440) {
-	                rainStart();
-	            }
-	        } else {
-	            this.minutosLloviendo++;
-	            if (this.minutosLloviendo >= 5) {
-	                rainStop();
-	            } else {
-	                if (Util.random(1, 100) <= 7) {
-	                    rainStop();
-	                }
-	            }
-	        }
+
+            if (!this.raining) {
+                this.minutosSinLluvia++;
+                if (this.minutosSinLluvia >= 15 && this.minutosSinLluvia < 1440) {
+                    if (Util.random(1, 100) <= 10) {
+                        rainStart();
+                    }
+                } else if (this.minutosSinLluvia >= 1440) {
+                    rainStart();
+                }
+            } else {
+                this.minutosLloviendo++;
+                if (this.minutosLloviendo >= 5) {
+                    rainStop();
+                } else {
+                    if (Util.random(1, 100) <= 7) {
+                        rainStop();
+                    }
+                }
+            }
         }
     }
 
     public void piqueteTimer(long now) {
-    	// check every second
+        // check every second
         if ((now - lastPiqueteTimer) > 1_000) {
             lastPiqueteTimer = now;
 
             getUsers().stream()
-		    	.filter(User::hasId)
-		    	.filter(User::isLogged)
-		    	.forEach(User::checkPiquete);
+                    .filter(User::hasId)
+                    .filter(User::isLogged)
+                    .forEach(User::checkPiquete);
         }
     }
 
     public void purgePenaltiesTimer(long now) {
         if ((now - lastPurgarPenas) > 60_000) {
             lastPurgarPenas = now;
-            
+
             getUsers().stream()
-		    	.filter(User::hasId)
-		    	.filter(User::isLogged)
-		    	.forEach(User::checkPenalties);
+                    .filter(User::hasId)
+                    .filter(User::isLogged)
+                    .forEach(User::checkPenalties);
         }
     }
 
     private void checkIdleUserTimer(long now) {
         if ((now - lastCheckIdleUser) > 60_000) {
             lastCheckIdleUser = now;
-    	
+
             getUsers().stream()
-		    	.filter(User::hasId)
-		    	.filter(User::isLogged)
-		    	.forEach(User::checkIdle);
+                    .filter(User::hasId)
+                    .filter(User::isLogged)
+                    .forEach(User::checkIdle);
         }
     }
 
@@ -794,37 +810,37 @@ public class GameServer implements Constants {
     DailyStats dayStats = new DailyStats();
 
     private void passMinuteTimer(long now) {
-    	// fired every minute
+        // fired every minute
         if ((now - lastPassMinuteTimer) > 60_000) {
             lastPassMinuteTimer = now;
-    	
-	    	
-	        this.minutesRunning++;
-	        if (this.minutesRunning == 60) {
-	            this.hoursRunning++;
-	            if (this.hoursRunning == 24) {
-	                saveDayStats();
-	                this.dayStats.reset();
-	                getGuildMngr().dayElapsed();
-	                this.hoursRunning = 0;
-	            }
-	            this.minutesRunning = 0;
-	        }
-	        this.minutesWorldSave++;
-	        if (this.minutesWorldSave >= IntervaloMinutosWs) {
-	            backupWorld();
-	            this.minutesWorldSave = 0;
-	        }
-	        if (this.minutesLastClean >= 15) {
-	            this.minutesLastClean = 0;
-	            reSpawnOrigPosNpcs(); // respawn de los guardias en las pos originales
-	            cleanWorld();
-	        } else {
-	            this.minutesLastClean++;
-	        }
-	        getWorkWatcher().passMinute();
-	        
-	        Gdx.app.log("Info: ", "Usuarios conectados: " + getUsuariosConectados().size() + " GMs:" + getGMsOnline().size());
+
+
+            this.minutesRunning++;
+            if (this.minutesRunning == 60) {
+                this.hoursRunning++;
+                if (this.hoursRunning == 24) {
+                    saveDayStats();
+                    this.dayStats.reset();
+                    getGuildMngr().dayElapsed();
+                    this.hoursRunning = 0;
+                }
+                this.minutesRunning = 0;
+            }
+            this.minutesWorldSave++;
+            if (this.minutesWorldSave >= IntervaloMinutosWs) {
+                backupWorld();
+                this.minutesWorldSave = 0;
+            }
+            if (this.minutesLastClean >= 15) {
+                this.minutesLastClean = 0;
+                reSpawnOrigPosNpcs(); // respawn de los guardias en las pos originales
+                cleanWorld();
+            } else {
+                this.minutesLastClean++;
+            }
+            getWorkWatcher().passMinute();
+
+            Gdx.app.log("Info: ", "Usuarios conectados: " + getUsuariosConectados().size() + " GMs:" + getGMsOnline().size());
         }
     }
 
@@ -835,7 +851,7 @@ public class GameServer implements Constants {
             short cant = ini.getShort("INIT", "NumLines");
             lineas = new String[cant];
             for (int i = 0; i < cant; i++) {
-                lineas[i] = ini.getString("Help", "Line" + (i+1));
+                lineas[i] = ini.getString("Help", "Line" + (i + 1));
             }
         } catch (java.io.FileNotFoundException e) {
             e.printStackTrace();
@@ -846,33 +862,33 @@ public class GameServer implements Constants {
     }
 
     public void sendMessageToGMs(String msg) {
-    	getUsers().stream()
-			.filter(p -> p.isLogged() && p.isGM())
-			.forEach(p -> p.sendMessage(msg, FontType.FONTTYPE_GM));
+        getUsers().stream()
+                .filter(p -> p.isLogged() && p.isGM())
+                .forEach(p -> p.sendMessage(msg, FontType.FONTTYPE_GM));
     }
 
     public void sendMessageToRoleMasters(String msg) {
-    	getUsers().stream()
-    		.filter(p -> p.isLogged() && p.isRoleMaster())
-    		.forEach(p -> p.sendMessage(msg, FontType.FONTTYPE_GUILDMSG));
+        getUsers().stream()
+                .filter(p -> p.isLogged() && p.isRoleMaster())
+                .forEach(p -> p.sendMessage(msg, FontType.FONTTYPE_GUILDMSG));
     }
-    
+
     //--- fixme ------ fixme ------ fixme ------ fixme ------ fixme ------ fixme ---
     public void backupWorld() {
-    	// doBackup
-    	// FIXME
+        // doBackup
+        // FIXME
         this.doingBackup = true;
         //enviarATodos(MSG_BKW);
-      //  enviarATodos(MSG_TALK, "Servidor> Realizando WorldSave..." + FontType.SERVER);
+        //  enviarATodos(MSG_TALK, "Servidor> Realizando WorldSave..." + FontType.SERVER);
         saveGuildsDB();
         cleanWorld();
         worldSave();
         //modGuilds.v_RutinaElecciones
         getWorkWatcher().reset(); // Reseteamos al Centinela        
-      //  enviarATodos(MSG_TALK, "Servidor> WorldSave terminado." + FontType.SERVER);
-      //  enviarATodos(MSG_BKW);
+        //  enviarATodos(MSG_TALK, "Servidor> WorldSave terminado." + FontType.SERVER);
+        //  enviarATodos(MSG_BKW);
         /*********** FIXME
-        estadisticasWeb.Informar(EVENTO_NUEVO_CLAN, 0)
+         estadisticasWeb.Informar(EVENTO_NUEVO_CLAN, 0)
          ******************/
         this.doingBackup = false;
         Gdx.app.log("Info: ", "Backup completado con exito");
@@ -883,24 +899,24 @@ public class GameServer implements Constants {
     }
 
     public void cleanWorld(User admin) {
-    	// Comando /LIMPIAR
-		if (!admin.isGM()) {
-			return;
-		}
-    	int removedObjects = cleanWorld();
+        // Comando /LIMPIAR
+        if (!admin.isGM()) {
+            return;
+        }
+        int removedObjects = cleanWorld();
         if (admin != null) {
-			admin.sendMessage("Servidor> Limpieza del mundo completa. Se eliminaron " + removedObjects + " objetos.", 
-					FontType.FONTTYPE_SERVER);
-		}
+            admin.sendMessage("Servidor> Limpieza del mundo completa. Se eliminaron " + removedObjects + " objetos.",
+                    FontType.FONTTYPE_SERVER);
+        }
     }
 
     private int cleanWorld() {
-    	this.trashCollector.stream()
-    		.forEach(pos -> {
-    			getMap(pos.map).removeObject(pos.x, pos.y);
-    		});
-    	int removedObjects = this.trashCollector.size();
-    	this.trashCollector.clear();
+        this.trashCollector.stream()
+                .forEach(pos -> {
+                    getMap(pos.map).removeObject(pos.x, pos.y);
+                });
+        int removedObjects = this.trashCollector.size();
+        this.trashCollector.clear();
         return removedObjects;
     }
 
@@ -909,135 +925,136 @@ public class GameServer implements Constants {
         // Hacer un respawn de los guardias en las pos originales.
         reSpawnOrigPosNpcs();
         // Ver cu�ntos mapas necesitan backup.
-        
+
         List<Map> mapsToBackup = this.maps.stream()
-        	.filter(Map::isBackup)
-        	.collect(Collectors.toList());
-        
+                .filter(Map::isBackup)
+                .collect(Collectors.toList());
+
         // Guardar los mapas
         this.feedback.init("Guardando mapas modificados", mapsToBackup.size());
-        
+
         mapsToBackup.stream()
-        	.forEach(map -> {
-        		map.saveMapBackup();
-        		this.feedback.step("Mapa " + map.getMapNumber());
-        	});
+                .forEach(map -> {
+                    map.saveMapBackup();
+                    this.feedback.step("Mapa " + map.getMapNumber());
+                });
         this.feedback.finish();
-        
+
         // Guardar los NPCs
         try {
             IniFile ini = new IniFile();
             getNpcs().stream()
-            	.filter(Npc::isBackup)
-            	.forEach(npc -> npc.backupNpc(ini));
+                    .filter(Npc::isBackup)
+                    .forEach(npc -> npc.backupNpc(ini));
 
             // Guardar todo
             ini.store("worldBackup" + File.separator + "backNPCs.dat");
         } catch (Exception e) {
             Gdx.app.error("Fatal: ", "worldSave(): ERROR EN BACKUP NPCS", e);
         }
-        sendToAll(new ConsoleMsgResponse("Servidor> WorldSave ha conclu�do", 
-        		FontType.FONTTYPE_SERVER.id()));
+        sendToAll(new ConsoleMsgResponse("Servidor> WorldSave ha conclu�do",
+                FontType.FONTTYPE_SERVER.id()));
     }
 
     private void reSpawnOrigPosNpcs() {
         List<Npc> spawnNPCs = new ArrayList<>();
         getNpcs().stream()
-        	.filter(Npc::isNpcActive)
-        	.forEach(npc -> {
-        		if (npc.getNumber() == GUARDIAS && npc.getOrig().isValid()) {
-        			npc.quitarNPC(); // FIXME, lo elimina del server??? revisar.
-        			spawnNPCs.add(npc);
-        		} else if (npc.counters().TiempoExistencia > 0) {
-        			npc.muereNpc(null);
-        		}
-        	});
+                .filter(Npc::isNpcActive)
+                .forEach(npc -> {
+                    if (npc.getNumber() == GUARDIAS && npc.getOrig().isValid()) {
+                        npc.quitarNPC(); // FIXME, lo elimina del server??? revisar.
+                        spawnNPCs.add(npc);
+                    } else if (npc.counters().TiempoExistencia > 0) {
+                        npc.muereNpc(null);
+                    }
+                });
         spawnNPCs.stream().forEach(Npc::reSpawnNpc);
     }
-    
-    
-	/**
-	 * Broadcast a server message
-	 * @param admin sending a server message
-	 * @param message to broadcast to all connected users
-	 */
-	public void sendServerMessage(User admin, String message) {
-		// Comando /RMSG
-		if (!admin.isGM()) {
-			return;
-		}
-		Log.logGM(admin.getUserName(), "Mensaje Broadcast: " + message);
-		if (!message.equals("")) {
-			if (admin.getFlags().isGM()) {
-				Log.logGM(admin.getUserName(), "Mensaje Broadcast:" + message);
-				sendToAll(new ConsoleMsgResponse(message, FontType.FONTTYPE_TALK.id()));
-			}
-		}
-	}
-	
+
+
+    /**
+     * Broadcast a server message
+     *
+     * @param admin   sending a server message
+     * @param message to broadcast to all connected users
+     */
+    public void sendServerMessage(User admin, String message) {
+        // Comando /RMSG
+        if (!admin.isGM()) {
+            return;
+        }
+        Log.logGM(admin.getUserName(), "Mensaje Broadcast: " + message);
+        if (!message.equals("")) {
+            if (admin.getFlags().isGM()) {
+                Log.logGM(admin.getUserName(), "Mensaje Broadcast:" + message);
+                sendToAll(new ConsoleMsgResponse(message, FontType.FONTTYPE_TALK.id()));
+            }
+        }
+    }
+
     public void sendMessageToAdmins(User admin, String message, FontType fuente) {
-		if (!admin.isGM()) {
-			return;
-		}
-		getUsers().stream()
-			.filter(u -> u != null && u.getId() > 0 && u.isLogged() && u.isGM())
-			.forEach(u -> u.sendMessage(message, fuente));
+        if (!admin.isGM()) {
+            return;
+        }
+        getUsers().stream()
+                .filter(u -> u != null && u.getId() > 0 && u.isLogged() && u.isGM())
+                .forEach(u -> u.sendMessage(message, fuente));
     }
 
     public void sendMessageToRoyalArmy(User admin, String message) {
-		if (!admin.isGM()) {
-			return;
-		}
-		getUsers().stream()
-			.filter(u -> u != null && u.getId() > 0 && u.isLogged()
-					&& (u.getFlags().isGM() || u.isRoyalArmy()))
-			.forEach(u -> u.sendMessage("ARMADA REAL> " + message, FontType.FONTTYPE_TALK));
+        if (!admin.isGM()) {
+            return;
+        }
+        getUsers().stream()
+                .filter(u -> u != null && u.getId() > 0 && u.isLogged()
+                        && (u.getFlags().isGM() || u.isRoyalArmy()))
+                .forEach(u -> u.sendMessage("ARMADA REAL> " + message, FontType.FONTTYPE_TALK));
     }
 
     public void sendMessageToDarkLegion(User admin, String message) {
-		if (!admin.isGM()) {
-			return;
-		}
-		getUsers().stream()
-			.filter(u -> u != null && u.getId() > 0 && u.isLogged()
-					&& (u.getFlags().isGM() || u.isDarkLegion()))
-			.forEach(u -> u.sendMessage("LEGION OSCURA> " + message, FontType.FONTTYPE_TALK));
+        if (!admin.isGM()) {
+            return;
+        }
+        getUsers().stream()
+                .filter(u -> u != null && u.getId() > 0 && u.isLogged()
+                        && (u.getFlags().isGM() || u.isDarkLegion()))
+                .forEach(u -> u.sendMessage("LEGION OSCURA> " + message, FontType.FONTTYPE_TALK));
     }
 
     public void sendMessageToCitizens(User admin, String message) {
-		if (!admin.isGM()) {
-			return;
-		}
-		getUsers().stream()
-			.filter(u -> u != null && u.getId() > 0 && u.isLogged() && !u.isCriminal())
-			.forEach(u -> u.sendMessage("CIUDADANOS> " + message, FontType.FONTTYPE_TALK));
+        if (!admin.isGM()) {
+            return;
+        }
+        getUsers().stream()
+                .filter(u -> u != null && u.getId() > 0 && u.isLogged() && !u.isCriminal())
+                .forEach(u -> u.sendMessage("CIUDADANOS> " + message, FontType.FONTTYPE_TALK));
     }
 
     public void sendMessageToCriminals(User admin, String message) {
-		if (!admin.isGM()) {
-			return;
-		}
-		getUsers().stream()
-			.filter(u -> u != null && u.getId() > 0 && u.isLogged() && u.isCriminal())
-			.forEach(u -> u.sendMessage("CRIMINALES> " + message, FontType.FONTTYPE_TALK));
+        if (!admin.isGM()) {
+            return;
+        }
+        getUsers().stream()
+                .filter(u -> u != null && u.getId() > 0 && u.isLogged() && u.isCriminal())
+                .forEach(u -> u.sendMessage("CRIMINALES> " + message, FontType.FONTTYPE_TALK));
     }
-    
+
     public void sendCouncilMessage(User user, String message) {
-    	if (user.isRoyalCouncil()) {
-    		getUsers().stream()
-	    		.filter(u -> u != null && u.getId() > 0 && u.isLogged() && u.isRoyalCouncil())
-	    		.forEach(u -> u.sendMessage("(Consejero) " + user.getUserName() + " > " + message,
-	    				FontType.FONTTYPE_CONSEJO));
-    	} else if (user.isChaosCouncil()) {
-    		getUsers().stream()
-	    		.filter(u -> u != null && u.getId() > 0 && u.isLogged() && u.isChaosCouncil())
-	    		.forEach(u -> u.sendMessage("(Consejero) " + user.getUserName() + " > " + message,
-    				FontType.FONTTYPE_CONSEJOCAOS));
-    	}
+        if (user.isRoyalCouncil()) {
+            getUsers().stream()
+                    .filter(u -> u != null && u.getId() > 0 && u.isLogged() && u.isRoyalCouncil())
+                    .forEach(u -> u.sendMessage("(Consejero) " + user.getUserName() + " > " + message,
+                            FontType.FONTTYPE_CONSEJO));
+        } else if (user.isChaosCouncil()) {
+            getUsers().stream()
+                    .filter(u -> u != null && u.getId() > 0 && u.isLogged() && u.isChaosCouncil())
+                    .forEach(u -> u.sendMessage("(Consejero) " + user.getUserName() + " > " + message,
+                            FontType.FONTTYPE_CONSEJOCAOS));
+        }
     }
 
     private void saveDayStats() {
-    	SimpleDateFormat df_xml = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat df_xml = new SimpleDateFormat("yyyyMMdd");
         SimpleDateFormat df_dia = new SimpleDateFormat("dd/MM/yyyy");
         SimpleDateFormat df_hora = new SimpleDateFormat("HH:mm:ss");
         Date fecha = new java.util.Date();
@@ -1045,7 +1062,7 @@ public class GameServer implements Constants {
         String hora = df_hora.format(fecha);
         String filename = "logs" + File.separator + "stats-" + df_xml.format(fecha) + ".xml";
 
-        try (BufferedWriter  f = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename, true)))) {
+        try (BufferedWriter f = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename, true)))) {
             f.write("<stats>");
             f.write("<ao>");
             f.write("<dia>" + dia + "</dia>");
@@ -1059,48 +1076,49 @@ public class GameServer implements Constants {
         }
     }
 
-	public ServerStatus serverStatus() {
-		ServerStatus status = new ServerStatus();
-		status.uptime = calculateUptime();
-		status.usersOnline = getUsuariosConectados().size();
-		status.memoryStatus = memoryStatus();
-		return status;
-	}
-	
-	class ServerStatus {
-		String uptime;
-		int usersOnline;
-		String memoryStatus;
-	}
+    public ServerStatus serverStatus() {
+        ServerStatus status = new ServerStatus();
+        status.uptime = calculateUptime();
+        status.usersOnline = getUsuariosConectados().size();
+        status.memoryStatus = memoryStatus();
+        return status;
+    }
 
- 
-	private static boolean loadBackup = false;
+    class ServerStatus {
+        String uptime;
+        int usersOnline;
+        String memoryStatus;
+    }
+
+
+    private static boolean loadBackup = false;
+
     public static void main(String[] args) {
         loadBackup = !(args.length > 0 && args[0].equalsIgnoreCase("reset"));
         if (loadBackup) {
-			Gdx.app.log("Info: ", "Arrancando usando el backup");
-		} else {
-			Gdx.app.log("Info: ", "Arrancando sin usar backup");
-		}
+            Gdx.app.log("Info: ", "Arrancando usando el backup");
+        } else {
+            Gdx.app.log("Info: ", "Arrancando sin usar backup");
+        }
         GameServer.instance().runGameLoop();
     }
 
     public void reloadObjects(User admin) {
-		if (!admin.isGod() && !admin.isAdmin()) {
-			return;
-		}
-    	this.objectInfoStorage.loadObjectsFromStorage();
-    	admin.sendMessage("Se han recargado los objetos", FontType.FONTTYPE_INFO);
-    	Log.logGM(admin.getUserName(), admin.getUserName() + " ha recargado los objetos.");
+        if (!admin.isGod() && !admin.isAdmin()) {
+            return;
+        }
+        this.objectInfoStorage.loadObjectsFromStorage();
+        admin.sendMessage("Se han recargado los objetos", FontType.FONTTYPE_INFO);
+        Log.logGM(admin.getUserName(), admin.getUserName() + " ha recargado los objetos.");
     }
 
-	public void reloadSpells(User admin) {
-		if (!admin.isGod() && !admin.isAdmin()) {
-			return;
-		}
-		loadSpells();
-    	admin.sendMessage("Se han recargado los hechizos", FontType.FONTTYPE_INFO);
-    	Log.logGM(admin.getUserName(), admin.getUserName() + " ha recargado los hechizos.");
-	}
+    public void reloadSpells(User admin) {
+        if (!admin.isGod() && !admin.isAdmin()) {
+            return;
+        }
+        loadSpells();
+        admin.sendMessage("Se han recargado los hechizos", FontType.FONTTYPE_INFO);
+        Log.logGM(admin.getUserName(), admin.getUserName() + " ha recargado los hechizos.");
+    }
 
 }

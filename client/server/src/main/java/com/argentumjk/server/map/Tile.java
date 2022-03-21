@@ -35,11 +35,11 @@ public class Tile {
     private final static int FLAGS_NUMBER = 3;
 
     private BitSet flags = new BitSet(FLAGS_NUMBER);
-    
+
     public enum Trigger {
 	    /* 0 */ TRIGGER_NADA,
 	    /* 1 */ TRIGGER_BAJO_TECHO,
-	    /* 2 */ TRIGGER_NO_RESPAWN, // Los NPCs no pueden hacer respawn y, el layer cuatro desaparece cuando un jugador pisa el tile: 
+	    /* 2 */ TRIGGER_NO_RESPAWN, // Los NPCs no pueden hacer respawn y, el layer cuatro desaparece cuando un jugador pisa el tile:
 	    /* 3 */ TRIGGER_POS_INVALIDA, // Los npcs no pueden pisar este trigger
 	    /* 4 */ TRIGGER_ZONA_SEGURA, // No se puede robar o pelear desde este trigger
 	    /* 5 */ TRIGGER_ANTI_PIQUETE, // Te encarcelan si estas mucho tiempo sobre este trigger
@@ -54,8 +54,8 @@ public class Tile {
     
     // teleport (del archivo .inf) 
     private short dest_map;
-    private short dest_x;
-    private short dest_y;
+    private byte dest_x;
+    private byte dest_y;
     
     private short objIndex;
     private int objCount;
@@ -63,14 +63,15 @@ public class Tile {
     private short userId = 0;
     private short npcId;
     
-    private int grh[] = new int[4];
+    private int grh[] = new int[2]; // TODO Thusing cambiar a 4
     
-    public Tile(short x, short y) {
-    	this.x = (byte)x;
-    	this.y = (byte)y;
+    public Tile(byte x, byte y) {
+    	this.x = x;
+    	this.y = y;
     }
     
     public int getGrh(int index) {
+        if (index >= 2 ) return 0; // TODO Thusing quitar esta linea
     	return this.grh[index];
     }
     
@@ -100,6 +101,7 @@ public class Tile {
     }
     
     public void setGrh(int index, int value) {
+        if (index >= 2) return;
     	this.grh[index] = value;
     }
     

@@ -16,6 +16,7 @@ import com.argentumjk.server.user.User;
 import com.argentumjk.server.user.UserStorage;
 import com.argentumjk.server.util.FontType;
 import com.argentumjk.server.util.Log;
+import com.argentumjk.server.util.Util;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
@@ -154,7 +155,7 @@ public class BannIP {
 		if (getBannedIPs().isEmpty()) {
 			admin.sendMessage("No hay banned IPs.", FontType.FONTTYPE_INFO);			
 		} else {
-			admin.sendMessage("Banned IPs: " + String.join(", ", getBannedIPs()), FontType.FONTTYPE_INFO);
+			admin.sendMessage("Banned IPs: " + Util.join(", ", getBannedIPs()), FontType.FONTTYPE_INFO);
 		}
 	}
 
@@ -180,11 +181,8 @@ public class BannIP {
 	
 	public void saveBannedIPList() {
 		final String fileName = Constants.DAT_DIR + File.separator + "BanIps.dat";
-		try {
-			Files.write(Paths.get(fileName), String.join("\n", this.bannedIPs).getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		FileHandle fileHandle = Gdx.files.local(fileName);
+		fileHandle.writeString(Util.join("\n", this.bannedIPs), false);
 	}
 
 }

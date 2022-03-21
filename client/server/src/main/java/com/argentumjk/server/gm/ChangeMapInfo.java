@@ -13,6 +13,7 @@ import com.argentumjk.server.map.Zone;
 import com.argentumjk.server.user.User;
 import com.argentumjk.server.util.FontType;
 import com.argentumjk.server.util.Log;
+import com.argentumjk.server.util.Util;
 
 public class ChangeMapInfo {
 	
@@ -185,7 +186,7 @@ public class ChangeMapInfo {
 	        admin.sendMessage("Mapa " + map.getMapNumber() + " Restricción: " + constraint.toString(), 
 	        		FontType.FONTTYPE_INFO);
 		} else {
-			String values = String.join(", ", MapConstraint.getNames());
+			String values = Util.join(", ", MapConstraint.getNames());
 			admin.sendMessage("Opciones válidas para Restricción: " + values, FontType.FONTTYPE_INFO);
 		}
 	}

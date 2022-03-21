@@ -2,6 +2,7 @@ package com.argentumjk.client;
 
 import android.os.Bundle;
 
+import com.argentumjk.client.general.EmptyMidiPlayer;
 import com.argentumjk.client.implementations.AndroidMidiPlayer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;

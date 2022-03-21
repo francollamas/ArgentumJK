@@ -19,10 +19,7 @@ package com.argentumjk.server.map;
 
 import static com.argentumjk.server.util.Color.COLOR_BLANCO;
 
-import java.io.BufferedOutputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -116,9 +113,9 @@ public class Map implements Constants {
     	this.server = server;
         this.mapNumber = nroMap;
         
-        for (int x = 0; x < MAP_WIDTH; x++) {
-            for (int y = 0; y < MAP_HEIGHT; y++) {
-                this.tiles[x][y] = new Tile((short)(x+1), (short)(y+1));
+        for (byte x = 1; x <= MAP_WIDTH; x++) {
+            for (byte y = 1; y <= MAP_HEIGHT; y++) {
+                this.tiles[x-1][y-1] = new Tile(x, y);
             }
         }
     }
@@ -283,18 +280,10 @@ public class Map implements Constants {
     	return tile(x, y).isTournamentZone();
     }
     
-    public void load(boolean loadBackup) {
-        try {
-            loadDatFile(loadBackup);
-            loadMapFile(loadBackup);
-            loadInfFile(loadBackup);
-        } catch (java.io.FileNotFoundException e) {
-            Gdx.app.log("Warn: ", "Archivo de mapa %d faltante." + this.mapNumber);
-        } catch (java.io.IOException e) {
-            Gdx.app.log("Warn: ", "Error leyendo archivo de mapa %d" + this.mapNumber);
-        } catch (Exception e) {
-        	Gdx.app.log("Warn: ", "Error con mapa " + this.mapNumber, e);
-        }
+    public void load(boolean loadBackup) throws Exception, IOException, FileNotFoundException {
+        loadDatFile(loadBackup);
+        loadMapFile(loadBackup);
+        loadInfFile(loadBackup);
     }
     
     
@@ -381,7 +370,7 @@ public class Map implements Constants {
 	    if (!loadBackup || !fileHandle.exists()) {
 	    	fileHandle = Gdx.files.internal(FOLDER_MAPS + File.separator + mapFileName);
 	    }
-	    
+
 	    byte[] bytes = fileHandle.readBytes();
 	    if (bytes == null) {
 	    	Gdx.app.error("Error: ", "Error, archivo de mapa inexistente: " + mapFileName);
@@ -669,7 +658,7 @@ public class Map implements Constants {
     	admin.sendMessage("Objetos en el mapa:", FontType.FONTTYPE_WARNING);
     	for (String name: objects.keySet()) {
     		admin.sendMessage(String.format("%2d %s: %s", 
-    				objects.get(name).size(), name, String.join(", ", objects.get(name))), 
+    				objects.get(name).size(), name, Util.join(", ", objects.get(name))),
     				FontType.FONTTYPE_INFO);
     	}
     	admin.sendMessage("Fueron encontrados " + objects.values().size() + " objetos", 

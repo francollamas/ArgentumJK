@@ -59,7 +59,7 @@ public class AndroidMidiPlayer implements IMidiPlayer {
         }
     }
 
-    private void newSynth() {
+    private void newSynth() throws Exception {
         if (synth != null) {
             synth.close();
         }
@@ -75,8 +75,8 @@ public class AndroidMidiPlayer implements IMidiPlayer {
             synth.getReceiver();
             MidiSystem.addMidiDevice(synth);
             sequencer = MidiSystem.getSequencer();
-        } catch (MidiUnavailableException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw e;
         }
     }
 
@@ -92,12 +92,12 @@ public class AndroidMidiPlayer implements IMidiPlayer {
         }
 
         playNewFileThread = new Thread(() -> {
-            if (synth != null) {
-                closeSynth();
-            }
-
-            newSynth();
             try {
+                if (synth != null) {
+                    closeSynth();
+                }
+
+                newSynth();
                 InputStream is = context.getAssets().open(getMusicDir(num));
                 StandardMidiFileReader fileReader = new StandardMidiFileReader();
                 currentSequence = fileReader.getSequence(is);
@@ -119,16 +119,11 @@ public class AndroidMidiPlayer implements IMidiPlayer {
                             setVolume(volume);
                         }
                     }).start();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (MidiUnavailableException e) {
-                e.printStackTrace();
-            } catch (InvalidMidiDataException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-
         });
+
         playNewFileThread.setDaemon(true);
         playNewFileThread.start();
     }
@@ -173,13 +168,11 @@ public class AndroidMidiPlayer implements IMidiPlayer {
             try {
                 boolean mustPlay = currentSequence != null;
 
-                newSynth();
                 try {
+                    newSynth();
                     sequencer.open();
                     sequencer.setSequence(currentSequence);
-                } catch (MidiUnavailableException e) {
-                    e.printStackTrace();
-                } catch (InvalidMidiDataException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 

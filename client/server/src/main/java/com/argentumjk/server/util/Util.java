@@ -20,6 +20,8 @@ package com.argentumjk.server.util;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
+import java.util.List;
+
 /**
  * @author gorlok
  */
@@ -82,5 +84,19 @@ public class Util {
 			Thread.sleep(millis);
 		} catch (InterruptedException ignore) {
 		}
+	}
+
+	public static String join(String delimiter, List<String> texts) {
+		StringBuilder sb = new StringBuilder(100);
+
+		for (int i = 0; i < texts.size(); i++) {
+			if (i < texts.size() - 1) {
+				sb.append(texts.get(0)).append(delimiter);
+			}
+			else {
+				sb.append(texts.get(0));
+			}
+		}
+		return sb.toString();
 	}
 }

@@ -20,11 +20,12 @@ package com.argentumjk.server;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import com.argentumjk.server.util.IniFile;
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 
 /**
  * @author gorlok
@@ -72,19 +73,18 @@ public class GamblerStats {
 	private void saveStats() {
 		Gdx.app.log("Trace: ", "saving gambler stats");
 
+		FileHandle fileHandle = Gdx.files.local(Constants.DAT_DIR + File.separator + APUESTAS_DAT);
 		try {
-			if (!Files.exists(Paths.get(Constants.DAT_DIR + File.separator + APUESTAS_DAT))) {
-				Files.createFile(Paths.get(Constants.DAT_DIR + File.separator + APUESTAS_DAT));
+			if (!fileHandle.exists()) {
+				fileHandle.writeString("", false);
 			}
-			IniFile ini = new IniFile(Constants.DAT_DIR + File.separator + APUESTAS_DAT);
+			IniFile ini = new IniFile(Constants.DAT_DIR + File.separator + APUESTAS_DAT, Files.FileType.Local);
 
 			ini.setValue("Main", "Ganancias", ganancias);
 			ini.setValue("Main", "Perdidas", perdidas);
 			ini.setValue("Main", "Jugadas", jugadas);
 			
 			ini.store(Constants.DAT_DIR + File.separator + APUESTAS_DAT);
-		} catch (FileNotFoundException e) {
-			Gdx.app.error("Fatal: ", "", e);
 		} catch (IOException e) {
 			Gdx.app.error("Fatal: ", "", e);
 		}

@@ -9,6 +9,7 @@ import com.argentumjk.server.protocol.ShowSOSFormResponse;
 import com.argentumjk.server.user.User;
 import com.argentumjk.server.util.FontType;
 import com.argentumjk.server.util.Log;
+import com.argentumjk.server.util.Util;
 
 public class HelpRequest {
 	
@@ -59,7 +60,7 @@ public class HelpRequest {
 		if (!admin.isGM()) {
 			return;
 		}
-		String sosList = String.join("" + Constants.NULL_CHAR, helpRequests);
+		String sosList = Util.join("" + Constants.NULL_CHAR, helpRequests);
 		admin.sendPacket(new ShowSOSFormResponse(sosList));
 	}
 

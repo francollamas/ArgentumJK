@@ -83,7 +83,7 @@ public class MenuView extends View {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchUp(event, x, y, pointer, button);
-                Dialogs.showOKDialog(Game.getInstance().getBundle().get("mn.credits"), "Creado por: Thusing, Thorkes, Gorlok");
+                Dialogs.showOKDialog(Game.getInstance().getBundle().get("mn.credits"), "Thusing, Thorkes, Gorlok");
             }
         });
 

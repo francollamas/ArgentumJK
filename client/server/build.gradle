@@ -1,4 +1,3 @@
-[compileJava, compileTestJava]*.options*.encoding = 'ISO-8859-1'
 [compileJava, compileTestJava]*.options*.compilerArgs << "-Xlint:deprecation"
 eclipse.project.name = appName + '-core'
 

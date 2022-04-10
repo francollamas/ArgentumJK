@@ -17,7 +17,7 @@
  *******************************************************************************/
 package com.argentumjk.server.net;
 
-import java.util.Optional;
+import com.argentumjk.server.util.Optional;
 
 
 import com.argentumjk.server.GameServer;
@@ -1018,8 +1018,14 @@ class ProcessingHandler extends ChannelInboundHandlerAdapter {
 	}
 
 	private void handleLoginNewChar(LoginNewCharRequest packet, User user) {
-		user.connectNewUser(packet.userName, packet.password, packet.race,
-				packet.gender, packet.clazz, packet.email, packet.homeland);
+		try {
+			user.connectNewUser(packet.userName, packet.password, packet.race,
+					packet.gender, packet.clazz, packet.email, packet.homeland);
+		}
+		catch (Exception e) {
+			System.out.println("Se rompio el handleLoginNewChar");
+			e.printStackTrace();
+		}
 	}
 
 	private void handleCommerceSell(CommerceSellRequest packet, User user) {

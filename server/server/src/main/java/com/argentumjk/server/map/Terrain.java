@@ -18,7 +18,7 @@
 package com.argentumjk.server.map;
 
 import java.util.Arrays;
-import java.util.Optional;
+import com.argentumjk.server.util.Optional;
 
 public enum Terrain {
 	/* 0 */ FOREST("BOSQUE"),
@@ -38,9 +38,12 @@ public enum Terrain {
 	}
 
 	public static Optional<Terrain> fromName(String name) {
-		return Arrays.stream(Terrain.values())
-				.filter(t -> name.equalsIgnoreCase(t.name))
-				.findFirst();
+		for (Terrain t : Terrain.values()) {
+			if (name.equalsIgnoreCase(t.name)) {
+				return Optional.of(t);
+			}
+		}
+		return Optional.empty();
 	}
 
 }

@@ -17,6 +17,7 @@
  *******************************************************************************/
 package com.argentumjk.server;
 
+import com.argentumjk.server.util.Optional;
 import java.util.stream.Stream;
 
 public enum ObjType {
@@ -71,7 +72,12 @@ public enum ObjType {
 	
 	private static ObjType[] values = ObjType.values();
 	public static ObjType value(int value) {
-		return Stream.of(values).filter(ot -> ot.value() == value).findFirst().get();
+		for (ObjType ot : values) {
+			if (ot.value() == value) {
+				return Optional.of(ot).get();
+			}
+		}
+		return Optional.<ObjType>empty().get();
 	}
 
 }

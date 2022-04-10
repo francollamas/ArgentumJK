@@ -1,9 +1,9 @@
 package com.argentumjk.server.gm;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.argentumjk.server.util.Optional;
 
 import com.argentumjk.server.GameServer;
 import com.argentumjk.server.map.Map;
@@ -81,7 +81,11 @@ public class ChangeMapInfo {
 			
 	        admin.sendMessage("Mapa " + map.getMapNumber() + " Zona: " + zone.get(), FontType.FONTTYPE_INFO);
 		} else {
-			List<String> values = Arrays.stream(Zone.values()).map(Zone::toString).collect(Collectors.toList());
+			List<String> values = new ArrayList<>();
+			for (Zone zone1 : Zone.values()) {
+				String toString = zone1.toString();
+				values.add(toString);
+			}
 			admin.sendMessage("Opciones válidas para Zona: " + values, FontType.FONTTYPE_INFO);
 			admin.sendMessage("NOTA: el único valor significante es 'DUNGEON', donde no hay efecto de lluvia.", 
 					FontType.FONTTYPE_INFO);

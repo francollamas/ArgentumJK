@@ -75,9 +75,12 @@ public enum Skill {
     }
     
     public static Skill byName(String skillName) {
-    	return Arrays.stream(VALUES)
-    			.filter( s -> skillName.equalsIgnoreCase(s.name))
-    			.findFirst().orElse(null);
+		for (Skill s : VALUES) {
+			if (skillName.equalsIgnoreCase(s.name)) {
+				return s;
+			}
+		}
+		return null;
     }
     
     public byte value() {

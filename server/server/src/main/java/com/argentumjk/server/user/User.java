@@ -2363,39 +2363,42 @@ public class User extends AbstractCharacter {
 
 	private void warpPets() {
 		// copy list first
-		List<Npc> pets = getUserPets().getPets().stream().collect(Collectors.toList());
+		List<Npc> pets = new ArrayList<>();
+		for (Npc npc1 : getUserPets().getPets()) {
+			pets.add(npc1);
+		}
 
-		pets.forEach(pet -> {
-			if (pet.counters().TiempoExistencia > 0) {
+		for (Npc npc : pets) {
+			if (npc.counters().TiempoExistencia > 0) {
 				// Es una mascota de invocación. Se pierde al cambiar de mapa
-				getUserPets().removePet(pet);
-			} else if (pet.canReSpawn()) {
+				getUserPets().removePet(npc);
+			} else if (npc.canReSpawn()) {
 				// Es una mascota domada que puede hacer respawn
 
-				Map oldMapa = this.server.getMap(pet.pos().map);
+				Map oldMapa = this.server.getMap(npc.pos().map);
 				Map newMapa = this.server.getMap(pos().map);
-				MapPos lugarLibre = newMapa.closestLegalPosNpc(pos().x, pos().y, pet.isWaterValid(), pet.isLandInvalid(), true);
+				MapPos lugarLibre = newMapa.closestLegalPosNpc(pos().x, pos().y, npc.isWaterValid(), npc.isLandInvalid(), true);
 
 				if (lugarLibre != null) {
 					// La mascota lo sigue al nuevo mapa, y mantiene su control.
 					if (oldMapa != null) {
-						oldMapa.exitNpc(pet);
+						oldMapa.exitNpc(npc);
 					}
 					// No se permiten mascotas en zonas seguras, esperan afuera.
 					if (!newMapa.isSafeMap()) {
-						newMapa.enterNpc(pet, lugarLibre.x, lugarLibre.y);
+						newMapa.enterNpc(npc, lugarLibre.x, lugarLibre.y);
 					} else {
-						pet.pos().reset();
+						npc.pos().reset();
 					}
 				} else {
 					// La mascota no puede seguirlo al nuevo mapa, asi que pierde su control.
-					getUserPets().removePet(pet);
+					getUserPets().removePet(npc);
 				}
 			} else {
 				// La mascota no puede seguirlo al nuevo mapa, asi que pierde su control.
-				getUserPets().removePet(pet);
+				getUserPets().removePet(npc);
 			}
-		});
+		}
 
 		if (pets.size() < getUserPets().getPets().size()) {
 			sendMessage("Pierdes el control de tus invocaciones.", FontType.FONTTYPE_INFO);
@@ -3640,10 +3643,10 @@ public class User extends AbstractCharacter {
 	}
 
 	public void allPetsAttackUser(User objetivo) {
-		getUserPets().getPets().forEach(pet -> {
+		for (Npc pet : getUserPets().getPets()) {
 			pet.attackedByUserName(objetivo.getUserName());
 			pet.defenderse();
-		});
+		}
 	}
 	
 	public boolean isAtDuelArena() {
@@ -4331,7 +4334,7 @@ public class User extends AbstractCharacter {
 	private void checkSummonTimeout() {
 		// copy list of pets, to avoid concurrent issues
 		List<Npc> pets = new ArrayList<>(getUserPets().getPets());
-		pets.forEach(pet -> {
+		for (Npc pet : pets) {
 			if (pet.counters().TiempoExistencia > 0) {
 				pet.counters().TiempoExistencia--;
 				if (pet.counters().TiempoExistencia == 0) {
@@ -4339,7 +4342,7 @@ public class User extends AbstractCharacter {
 					pet.muereNpc(null);
 				}
 			}
-		});
+		}
 	}
 
 	long lTirarBasura;

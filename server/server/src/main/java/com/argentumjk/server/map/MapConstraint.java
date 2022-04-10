@@ -1,5 +1,6 @@
 package com.argentumjk.server.map;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,7 +39,12 @@ public enum MapConstraint {
 	}
 	
 	public static List<String> getNames() {
-		return Arrays.stream(VALUES).map(v -> v.name).collect(Collectors.toList());
+		List<String> list = new ArrayList<>();
+		for (MapConstraint v : VALUES) {
+			String s = v.name;
+			list.add(s);
+		}
+		return list;
 	}
 	
 }

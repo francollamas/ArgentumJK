@@ -75,9 +75,12 @@ public enum Clazz {
 	}
 
 	public static Clazz byName(String value) {
-		return Arrays.stream(VALUES)
-				.filter( c -> value.equalsIgnoreCase(c.name()))
-				.findFirst().orElse(null);
+		for (Clazz c : VALUES) {
+			if (value.equalsIgnoreCase(c.name())) {
+				return c;
+			}
+		}
+		return null;
 	}
 
 	@Override

@@ -91,32 +91,32 @@ public class WorkWatcher {
 		// ############################################################
 		// Va al siguiente usuario que se encuentre trabajando
 		// ############################################################
-		server.getUsers().stream().forEach(p -> {
+		for (User p : server.getUsers()) {
 			if (p.isLogged() && p.isWorking() && !p.isGM()) {
 				if (!p.getFlags().workWatcherRepliedOK) {
-	                // Inicializamos
-	                userWatching = p;
-	                userRemainingMinutes = TIEMPO_INICIAL;
-	                askingCode = Util.random(1, 32000);
-	                spawnTime = System.currentTimeMillis();
-	                secondsToCallUserAttention = 0;
-	                
-	                // Ponemos al centinela en posición
-	                warpWorkWatcher(p);
-	                
-	                if (workWatcher != null) {
-	                    // Mandamos el mensaje (el centinela habla y aparece en consola para que no haya dudas)
-	                	workWatcher.talkToUser(p, "Saludos " + p.getUserName() 
-	                		+ ", soy el Centinela de estas tierras. Me gustaría que escribas /CENTINELA " 
-	                		+ askingCode + " en no más de dos minutos.", Color.COLOR_VERDE);
-	                    p.sendMessage("El centinela intenta llamar tu atención. ¡Respóndele rápido!", FontType.FONTTYPE_CENTINELA);
-	                }
-	                return;
+					// Inicializamos
+					userWatching = p;
+					userRemainingMinutes = TIEMPO_INICIAL;
+					askingCode = Util.random(1, 32000);
+					spawnTime = System.currentTimeMillis();
+					secondsToCallUserAttention = 0;
+
+					// Ponemos al centinela en posición
+					warpWorkWatcher(p);
+
+					if (workWatcher != null) {
+						// Mandamos el mensaje (el centinela habla y aparece en consola para que no haya dudas)
+						workWatcher.talkToUser(p, "Saludos " + p.getUserName()
+								+ ", soy el Centinela de estas tierras. Me gustaría que escribas /CENTINELA "
+								+ askingCode + " en no más de dos minutos.", Color.COLOR_VERDE);
+						p.sendMessage("El centinela intenta llamar tu atención. ¡Respóndele rápido!", FontType.FONTTYPE_CENTINELA);
+					}
+					continue;
 				}
 			}
-		});
-	    
-	    // No hay chars trabajando, eliminamos el NPC si todavía estaba en algún lado y esperamos otro minuto
+		}
+
+		// No hay chars trabajando, eliminamos el NPC si todavía estaba en algún lado y esperamos otro minuto
 	    if (workWatcher != null) {
 	    	workWatcher.quitarNPC();
 	        workWatcher= null;
@@ -192,11 +192,11 @@ public class WorkWatcher {
 		// ############################################################
 		// Reset del Centinela
 		// ############################################################
-		server.getUsers().stream().forEach(p -> {
+		for (User p : server.getUsers()) {
 			if (p.isLogged() && !p.getUserName().trim().equals("") && p != userWatching) {
 				p.getFlags().workWatcherRepliedOK = false;
 			}
-		});
+		}
 	}
 	
 	public void sendCode(User user) {

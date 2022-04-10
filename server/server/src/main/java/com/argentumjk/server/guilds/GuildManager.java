@@ -88,8 +88,10 @@ public class GuildManager {
             	if (!guild.elections) {
             		guild.resetVotes();
             		guild.elections = true;
-            		guild.members.forEach(s -> sendOpenVotingAnnouncement(this.server.userByName(s)));
-            	} else {
+                    for (String s : guild.members) {
+                        sendOpenVotingAnnouncement(this.server.userByName(s));
+                    }
+                } else {
                     if (guild.members.size() > 1) {
                     	// compute elections results
                         String newLeaderName = guild.nuevoLider();

@@ -45,30 +45,34 @@ public class UserPets {
 	}
 	
 	public void removeAll() {
-		pets.forEach(pet -> {
+		for (Npc pet : pets) {
 			pet.releasePet();
 			pet.quitarNPC();
-		});
+		}
 		pets.clear();
 	}
 	
 	public void removeInvocationPets() {
 		List<Npc> n = new ArrayList<>(pets);
-		n.forEach(pet -> {
+		for (Npc pet : n) {
 			if (pet.isSpellSpawnedPet()) {
 				removePet(pet);
 				pet.quitarNPC();
 			}
-		});
+		}
 	}
 	
 	/** Ordenar a las mascotas del usuario atacar a un Npc */
 	public void petsAttackNpc(Npc targetNpc) {
-		pets.forEach(pet -> pet.setPetTargetNpc(targetNpc));
+		for (Npc pet : pets) {
+			pet.setPetTargetNpc(targetNpc);
+		}
 	}
 
 	public void petsFollowMaster() {
-		pets.forEach(pet -> pet.followMaster());
+		for (Npc pet : pets) {
+			pet.followMaster();
+		}
 	}
 
 	/**
@@ -76,18 +80,20 @@ public class UserPets {
 	 * amo
 	 */
 	public void petsFollowMaster(Npc targetNpc) {
-		pets.stream()
-			.filter(pet -> pet.targetNpc() == targetNpc)
-			.forEach(pet -> pet.followMaster());
+		for (Npc pet : pets) {
+			if (pet.targetNpc() == targetNpc) {
+				pet.followMaster();
+			}
+		}
 	}
 
 	public void petsFollowMaster(short target) {
-		pets.stream()
-			.filter(pet -> pet.targetUser()== target)
-			.forEach(pet -> {
+		for (Npc pet : pets) {
+			if (pet.targetUser() == target) {
 				pet.targetUser(0);
 				pet.followMaster();
-			});
+			}
+		}
 	}
 
 	public void removePet(Npc npc) {

@@ -1,6 +1,6 @@
 apply plugin: 'application'
 
-sourceCompatibility = 15
+sourceCompatibility = 1.7
 sourceSets.main.resources.srcDirs += [ rootProject.file('assets').path ]
 mainClassName = 'com.argentumjk.server.headless.HeadlessLauncher'
 eclipse.project.name = appName + '-headless'

@@ -18,7 +18,7 @@
 package com.argentumjk.server.map;
 
 import java.util.Arrays;
-import java.util.Optional;
+import com.argentumjk.server.util.Optional;
 
 public enum Zone {
 	/* 0 */ COUNTRY("CAMPO"),
@@ -37,9 +37,12 @@ public enum Zone {
 	}
 
 	public static Optional<Zone> fromName(String name) {
-		return Arrays.stream(Zone.values())
-				.filter(z -> name.equalsIgnoreCase(z.name))
-				.findFirst();
+		for (Zone z : Zone.values()) {
+			if (name.equalsIgnoreCase(z.name)) {
+				return Optional.of(z);
+			}
+		}
+		return Optional.empty();
 	}
 
 }

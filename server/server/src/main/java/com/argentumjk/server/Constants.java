@@ -117,7 +117,7 @@ public interface Constants {
     
     final static int NUM_CLASES  = 17;
     
-	final static int CANT_MAPAS  = 285;
+	final static int CANT_MAPAS  = 1;
     final static int XMinMapSize = 1;
     final static int YMinMapSize = 1;
     final static int XMaxMapSize = 100;

@@ -23,7 +23,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 import com.argentumjk.server.forum.ForumManager;
 import com.argentumjk.server.gm.BannIP;
@@ -50,6 +50,7 @@ import com.argentumjk.server.util.FontType;
 import com.argentumjk.server.util.IniFile;
 import com.argentumjk.server.util.Log;
 import com.argentumjk.server.util.Util;
+import com.argentumjk.server.util.Optional;
 
 import com.badlogic.gdx.Gdx;
 import io.netty.channel.Channel;
@@ -217,8 +218,11 @@ public class GameServer implements Constants {
     }
 
     public List<User> getUsers() {
-        return this.users.values().stream()
-                .collect(Collectors.toList());
+        List<User> list = new ArrayList<>();
+        for (User user : this.users.values()) {
+            list.add(user);
+        }
+        return list;
     }
 
     public List<Npc> getNpcs() {
@@ -292,21 +296,28 @@ public class GameServer implements Constants {
     }
 
     public List<String> getUsuariosConectados() {
-        return getUsers().stream()
-                .filter(c -> c.isLogged() && c.hasUserName() && !c.getFlags().isGM())
-                .map(User::getUserName)
-                .collect(Collectors.toList());
+        List<String> list = new ArrayList<>();
+        for (User c : getUsers()) {
+            if (c.isLogged() && c.hasUserName() && !c.getFlags().isGM()) {
+                String userName = c.getUserName();
+                list.add(userName);
+            }
+        }
+        return list;
     }
 
     public void echarPjsNoPrivilegiados() {
-        List<User> users = getUsers().stream()
-                .filter(c -> c.isLogged() && c.hasUserName() && !c.getFlags().isGM())
-                .collect(Collectors.toList());
+        List<User> users = new ArrayList<>();
+        for (User user : getUsers()) {
+            if (user.isLogged() && user.hasUserName() && !user.getFlags().isGM()) {
+                users.add(user);
+            }
+        }
 
-        users.forEach(c -> {
+        for (User c : users) {
             c.sendMessage("Servidor> Conexiones temporalmente cerradas por mantenimiento.", FontType.FONTTYPE_SERVER);
             c.quitGame();
-        });
+        }
     }
 
     public void shutdown() {
@@ -317,17 +328,25 @@ public class GameServer implements Constants {
     }
 
     public List<String> getUsuariosConIP(String ip) {
-        return getUsers().stream()
-                .filter(c -> c.isLogged() && c.hasUserName() && c.getIP().equals(ip))
-                .map(User::getUserName)
-                .collect(Collectors.toList());
+        List<String> list = new ArrayList<>();
+        for (User c : getUsers()) {
+            if (c.isLogged() && c.hasUserName() && c.getIP().equals(ip)) {
+                String userName = c.getUserName();
+                list.add(userName);
+            }
+        }
+        return list;
     }
 
     public List<String> getGMsOnline() {
-        return getUsers().stream()
-                .filter(c -> c.isLogged() && c.hasUserName() && c.getFlags().isGM())
-                .map(User::getUserName)
-                .collect(Collectors.toList());
+        List<String> list = new ArrayList<>();
+        for (User c : getUsers()) {
+            if (c.isLogged() && c.hasUserName() && c.getFlags().isGM()) {
+                String userName = c.getUserName();
+                list.add(userName);
+            }
+        }
+        return list;
     }
 
     public boolean isLoadBackup() {
@@ -408,7 +427,9 @@ public class GameServer implements Constants {
 
     private synchronized void removeDroppedUsers() {
         // Se hace aqui para evitar problemas de concurrencia
-        this.usersToDrop.stream().forEach(u -> this.users.remove(u.getId()));
+        for (User u : this.usersToDrop) {
+            this.users.remove(u.getId());
+        }
         this.usersToDrop.clear();
     }
 
@@ -517,9 +538,12 @@ public class GameServer implements Constants {
     }
 
     public Optional<User> findUser(Channel channel) {
-        return this.users.values().stream()
-                .filter(p -> p.getChannel() == channel)
-                .findFirst();
+        for (User p : this.users.values()) {
+            if (p.getChannel() == channel) {
+                return Optional.of(p);
+            }
+        }
+        return Optional.empty();
     }
 
     public void deleteNpc(Npc npc) {
@@ -550,9 +574,13 @@ public class GameServer implements Constants {
             return null;
         }
 
-        Optional<User> founded = getUsers().stream()
-                .filter(u -> userName.equalsIgnoreCase(u.getUserName()))
-                .findFirst();
+        Optional<User> founded = Optional.empty();
+        for (User u : getUsers()) {
+            if (userName.equalsIgnoreCase(u.getUserName())) {
+                founded = Optional.of(u);
+                break;
+            }
+        }
 
         return founded.isPresent() ? founded.get() : null;
     }
@@ -569,22 +597,24 @@ public class GameServer implements Constants {
             lastNpcAI = now;
 
             if (!this.doingBackup) {
-                getNpcs().stream()
-                        .filter(npc -> npc.isNpcActive() && !npc.isStatic())
-                        .forEach(npc -> {
-                            if (npc.isParalized()) {
-                                npc.efectoParalisisNpc();
-                            } else {
-                                // Usamos AI si hay algun user en el mapa
-                                if (npc.pos().isValid()) {
-                                    Map map = getMap(npc.pos().map);
-                                    if (map != null && map.getUsersCount() > 0) {
-                                        npc.doAI();
-                                    }
+                for (Npc npc : getNpcs()) {
+                    if (npc.isNpcActive() && !npc.isStatic()) {
+                        if (npc.isParalized()) {
+                            npc.efectoParalisisNpc();
+                        } else {
+                            // Usamos AI si hay algun user en el mapa
+                            if (npc.pos().isValid()) {
+                                Map map = getMap(npc.pos().map);
+                                if (map != null && map.getUsersCount() > 0) {
+                                    npc.doAI();
                                 }
                             }
-                        });
-                this.deadNpcs.stream().map(npcId -> this.npcs.remove(npcId));
+                        }
+                    }
+                }
+                for (Short npcId : this.deadNpcs) {
+                    this.npcs.remove(npcId);
+                }
                 this.deadNpcs.clear();
             }
         }
@@ -599,7 +629,7 @@ public class GameServer implements Constants {
             lastPasarSegundoTimer = now;
             List<User> readyToQuit = new LinkedList<>();
 
-            getUsers().stream().forEach(u -> {
+            for (User u : getUsers()) {
                 if (u.getCounters().Saliendo) {
                     u.getCounters().SalirCounter--;
                     if (u.getCounters().SalirCounter <= 0) {
@@ -615,8 +645,10 @@ public class GameServer implements Constants {
                         }
                     }
                 }
-            });
-            readyToQuit.stream().forEach(User::quitGame);
+            }
+            for (User user : readyToQuit) {
+                user.quitGame();
+            }
 
             getWorkWatcher().passSecond();
         }
@@ -624,9 +656,11 @@ public class GameServer implements Constants {
 
     public void saveUsers() {
         this.doingBackup = true;
-        getUsers().stream()
-                .filter(User::isLogged)
-                .forEach(User::saveUser);
+        for (User user : getUsers()) {
+            if (user.isLogged()) {
+                user.saveUser();
+            }
+        }
         this.doingBackup = false;
     }
 
@@ -659,13 +693,13 @@ public class GameServer implements Constants {
     private void soundFxTimer(long now) {
         if ((now - lastFX) > 200) {
             lastFX = now;
-            maps.stream()
-                    .filter(Map::isHasUsers)
-                    .forEach(m -> {
-                        if (Util.random(1, 150) < 12) {
-                            m.soundFx();
-                        }
-                    });
+            for (Map m : maps) {
+                if (m.isHasUsers()) {
+                    if (Util.random(1, 150) < 12) {
+                        m.soundFx();
+                    }
+                }
+            }
         }
     }
 
@@ -675,9 +709,11 @@ public class GameServer implements Constants {
         if ((now - lastGameTimer) > 40) {
             lastGameTimer = now;
 
-            getUsers().stream()
-                    .filter(User::hasId)
-                    .forEach(User::procesarEventos);
+            for (User user : getUsers()) {
+                if (user.hasId()) {
+                    user.procesarEventos();
+                }
+            }
         }
     }
 
@@ -685,7 +721,9 @@ public class GameServer implements Constants {
         if ((now - lastNpcAtacaTimer) > 2000) {
             lastNpcAtacaTimer = now;
 
-            getNpcs().stream().forEach(Npc::startAttacking);
+            for (Npc npc : getNpcs()) {
+                npc.startAttacking();
+            }
         }
     }
 
@@ -693,10 +731,13 @@ public class GameServer implements Constants {
         if ((now - lastTimerOculto) > 3_000) {
             lastTimerOculto = now;
 
-            getUsers().stream()
-                    .filter(User::hasId)
-                    .filter(User::isHidden)
-                    .forEach(User::updateHiding);
+            for (User user : getUsers()) {
+                if (user.hasId()) {
+                    if (user.isHidden()) {
+                        user.updateHiding();
+                    }
+                }
+            }
         }
     }
 
@@ -707,25 +748,34 @@ public class GameServer implements Constants {
         if ((now - lastLluviaTimer) > 1500) {
             lastLluviaTimer = now;
 
-            getUsers().stream()
-                    .filter(User::hasId)
-                    .forEach(User::rainingEffect);
+            for (User user : getUsers()) {
+                if (user.hasId()) {
+                    user.rainingEffect();
+                }
+            }
         }
     }
 
     public void sendToAll(ServerPacket packet) {
-        getUsers().stream()
-                .filter(User::hasId)
-                .filter(User::isLogged)
-                .forEach(u -> u.sendPacket(packet));
+        for (User u : getUsers()) {
+            if (u.hasId()) {
+                if (u.isLogged()) {
+                    u.sendPacket(packet);
+                }
+            }
+        }
     }
 
     public void sendToAdmins(ServerPacket packet) {
-        getUsers().stream()
-                .filter(User::hasId)
-                .filter(User::isLogged)
-                .filter(User::isGM)
-                .forEach(u -> u.sendPacket(packet));
+        for (User u : getUsers()) {
+            if (u.hasId()) {
+                if (u.isLogged()) {
+                    if (u.isGM()) {
+                        u.sendPacket(packet);
+                    }
+                }
+            }
+        }
     }
 
     long minutosLloviendo = 0;
@@ -774,10 +824,13 @@ public class GameServer implements Constants {
         if ((now - lastPiqueteTimer) > 1_000) {
             lastPiqueteTimer = now;
 
-            getUsers().stream()
-                    .filter(User::hasId)
-                    .filter(User::isLogged)
-                    .forEach(User::checkPiquete);
+            for (User user : getUsers()) {
+                if (user.hasId()) {
+                    if (user.isLogged()) {
+                        user.checkPiquete();
+                    }
+                }
+            }
         }
     }
 
@@ -785,10 +838,13 @@ public class GameServer implements Constants {
         if ((now - lastPurgarPenas) > 60_000) {
             lastPurgarPenas = now;
 
-            getUsers().stream()
-                    .filter(User::hasId)
-                    .filter(User::isLogged)
-                    .forEach(User::checkPenalties);
+            for (User user : getUsers()) {
+                if (user.hasId()) {
+                    if (user.isLogged()) {
+                        user.checkPenalties();
+                    }
+                }
+            }
         }
     }
 
@@ -796,10 +852,13 @@ public class GameServer implements Constants {
         if ((now - lastCheckIdleUser) > 60_000) {
             lastCheckIdleUser = now;
 
-            getUsers().stream()
-                    .filter(User::hasId)
-                    .filter(User::isLogged)
-                    .forEach(User::checkIdle);
+            for (User user : getUsers()) {
+                if (user.hasId()) {
+                    if (user.isLogged()) {
+                        user.checkIdle();
+                    }
+                }
+            }
         }
     }
 
@@ -862,15 +921,19 @@ public class GameServer implements Constants {
     }
 
     public void sendMessageToGMs(String msg) {
-        getUsers().stream()
-                .filter(p -> p.isLogged() && p.isGM())
-                .forEach(p -> p.sendMessage(msg, FontType.FONTTYPE_GM));
+        for (User p : getUsers()) {
+            if (p.isLogged() && p.isGM()) {
+                p.sendMessage(msg, FontType.FONTTYPE_GM);
+            }
+        }
     }
 
     public void sendMessageToRoleMasters(String msg) {
-        getUsers().stream()
-                .filter(p -> p.isLogged() && p.isRoleMaster())
-                .forEach(p -> p.sendMessage(msg, FontType.FONTTYPE_GUILDMSG));
+        for (User p : getUsers()) {
+            if (p.isLogged() && p.isRoleMaster()) {
+                p.sendMessage(msg, FontType.FONTTYPE_GUILDMSG);
+            }
+        }
     }
 
     //--- fixme ------ fixme ------ fixme ------ fixme ------ fixme ------ fixme ---
@@ -911,10 +974,9 @@ public class GameServer implements Constants {
     }
 
     private int cleanWorld() {
-        this.trashCollector.stream()
-                .forEach(pos -> {
-                    getMap(pos.map).removeObject(pos.x, pos.y);
-                });
+        for (MapPos pos : this.trashCollector) {
+            getMap(pos.map).removeObject(pos.x, pos.y);
+        }
         int removedObjects = this.trashCollector.size();
         this.trashCollector.clear();
         return removedObjects;
@@ -926,26 +988,30 @@ public class GameServer implements Constants {
         reSpawnOrigPosNpcs();
         // Ver cuï¿½ntos mapas necesitan backup.
 
-        List<Map> mapsToBackup = this.maps.stream()
-                .filter(Map::isBackup)
-                .collect(Collectors.toList());
+        List<Map> mapsToBackup = new ArrayList<>();
+        for (Map map1 : this.maps) {
+            if (map1.isBackup()) {
+                mapsToBackup.add(map1);
+            }
+        }
 
         // Guardar los mapas
         this.feedback.init("Guardando mapas modificados", mapsToBackup.size());
 
-        mapsToBackup.stream()
-                .forEach(map -> {
-                    map.saveMapBackup();
-                    this.feedback.step("Mapa " + map.getMapNumber());
-                });
+        for (Map map : mapsToBackup) {
+            map.saveMapBackup();
+            this.feedback.step("Mapa " + map.getMapNumber());
+        }
         this.feedback.finish();
 
         // Guardar los NPCs
         try {
             IniFile ini = new IniFile();
-            getNpcs().stream()
-                    .filter(Npc::isBackup)
-                    .forEach(npc -> npc.backupNpc(ini));
+            for (Npc npc : getNpcs()) {
+                if (npc.isBackup()) {
+                    npc.backupNpc(ini);
+                }
+            }
 
             // Guardar todo
             ini.store("worldBackup" + File.separator + "backNPCs.dat");
@@ -958,17 +1024,19 @@ public class GameServer implements Constants {
 
     private void reSpawnOrigPosNpcs() {
         List<Npc> spawnNPCs = new ArrayList<>();
-        getNpcs().stream()
-                .filter(Npc::isNpcActive)
-                .forEach(npc -> {
-                    if (npc.getNumber() == GUARDIAS && npc.getOrig().isValid()) {
-                        npc.quitarNPC(); // FIXME, lo elimina del server??? revisar.
-                        spawnNPCs.add(npc);
-                    } else if (npc.counters().TiempoExistencia > 0) {
-                        npc.muereNpc(null);
-                    }
-                });
-        spawnNPCs.stream().forEach(Npc::reSpawnNpc);
+        for (Npc npc : getNpcs()) {
+            if (npc.isNpcActive()) {
+                if (npc.getNumber() == GUARDIAS && npc.getOrig().isValid()) {
+                    npc.quitarNPC(); // FIXME, lo elimina del server??? revisar.
+                    spawnNPCs.add(npc);
+                } else if (npc.counters().TiempoExistencia > 0) {
+                    npc.muereNpc(null);
+                }
+            }
+        }
+        for (Npc spawnNPC : spawnNPCs) {
+            spawnNPC.reSpawnNpc();
+        }
     }
 
 
@@ -996,60 +1064,74 @@ public class GameServer implements Constants {
         if (!admin.isGM()) {
             return;
         }
-        getUsers().stream()
-                .filter(u -> u != null && u.getId() > 0 && u.isLogged() && u.isGM())
-                .forEach(u -> u.sendMessage(message, fuente));
+        for (User u : getUsers()) {
+            if (u != null && u.getId() > 0 && u.isLogged() && u.isGM()) {
+                u.sendMessage(message, fuente);
+            }
+        }
     }
 
     public void sendMessageToRoyalArmy(User admin, String message) {
         if (!admin.isGM()) {
             return;
         }
-        getUsers().stream()
-                .filter(u -> u != null && u.getId() > 0 && u.isLogged()
-                        && (u.getFlags().isGM() || u.isRoyalArmy()))
-                .forEach(u -> u.sendMessage("ARMADA REAL> " + message, FontType.FONTTYPE_TALK));
+        for (User u : getUsers()) {
+            if (u != null && u.getId() > 0 && u.isLogged()
+                    && (u.getFlags().isGM() || u.isRoyalArmy())) {
+                u.sendMessage("ARMADA REAL> " + message, FontType.FONTTYPE_TALK);
+            }
+        }
     }
 
     public void sendMessageToDarkLegion(User admin, String message) {
         if (!admin.isGM()) {
             return;
         }
-        getUsers().stream()
-                .filter(u -> u != null && u.getId() > 0 && u.isLogged()
-                        && (u.getFlags().isGM() || u.isDarkLegion()))
-                .forEach(u -> u.sendMessage("LEGION OSCURA> " + message, FontType.FONTTYPE_TALK));
+        for (User u : getUsers()) {
+            if (u != null && u.getId() > 0 && u.isLogged()
+                    && (u.getFlags().isGM() || u.isDarkLegion())) {
+                u.sendMessage("LEGION OSCURA> " + message, FontType.FONTTYPE_TALK);
+            }
+        }
     }
 
     public void sendMessageToCitizens(User admin, String message) {
         if (!admin.isGM()) {
             return;
         }
-        getUsers().stream()
-                .filter(u -> u != null && u.getId() > 0 && u.isLogged() && !u.isCriminal())
-                .forEach(u -> u.sendMessage("CIUDADANOS> " + message, FontType.FONTTYPE_TALK));
+        for (User u : getUsers()) {
+            if (u != null && u.getId() > 0 && u.isLogged() && !u.isCriminal()) {
+                u.sendMessage("CIUDADANOS> " + message, FontType.FONTTYPE_TALK);
+            }
+        }
     }
 
     public void sendMessageToCriminals(User admin, String message) {
         if (!admin.isGM()) {
             return;
         }
-        getUsers().stream()
-                .filter(u -> u != null && u.getId() > 0 && u.isLogged() && u.isCriminal())
-                .forEach(u -> u.sendMessage("CRIMINALES> " + message, FontType.FONTTYPE_TALK));
+        for (User u : getUsers()) {
+            if (u != null && u.getId() > 0 && u.isLogged() && u.isCriminal()) {
+                u.sendMessage("CRIMINALES> " + message, FontType.FONTTYPE_TALK);
+            }
+        }
     }
 
     public void sendCouncilMessage(User user, String message) {
         if (user.isRoyalCouncil()) {
-            getUsers().stream()
-                    .filter(u -> u != null && u.getId() > 0 && u.isLogged() && u.isRoyalCouncil())
-                    .forEach(u -> u.sendMessage("(Consejero) " + user.getUserName() + " > " + message,
-                            FontType.FONTTYPE_CONSEJO));
+            for (User u : getUsers()) {
+                if (u != null && u.getId() > 0 && u.isLogged() && u.isRoyalCouncil()) {
+                    u.sendMessage("(Consejero) " + user.getUserName() + " > " + message,
+                            FontType.FONTTYPE_CONSEJO);
+                }
+            }
         } else if (user.isChaosCouncil()) {
-            getUsers().stream()
-                    .filter(u -> u != null && u.getId() > 0 && u.isLogged() && u.isChaosCouncil())
-                    .forEach(u -> u.sendMessage("(Consejero) " + user.getUserName() + " > " + message,
-                            FontType.FONTTYPE_CONSEJOCAOS));
+            for (User u : getUsers()) {
+                if (u != null && u.getId() > 0 && u.isLogged() && u.isChaosCouncil()) {
+                    u.sendMessage("(Consejero) " + user.getUserName() + " > " + message,
+                            FontType.FONTTYPE_CONSEJOCAOS);
+                }
+            }
         }
     }
 

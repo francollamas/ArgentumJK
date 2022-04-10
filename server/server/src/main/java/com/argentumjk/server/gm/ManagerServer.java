@@ -337,10 +337,13 @@ public class ManagerServer {
         if (mapa == null) {
             return;
         }
-        List<String> userNames = mapa.getUsers().stream()
-                .filter(p -> !p.isGod())
-                .map(User::getUserName)
-                .collect(Collectors.toList());
+        List<String> userNames = new ArrayList<>();
+        for (User p : mapa.getUsers()) {
+            if (!p.isGod()) {
+                String userName = p.getUserName();
+                userNames.add(userName);
+            }
+        }
 
         admin.sendMessage("Hay " + userNames.size() +
                         " usuarios en el mapa: " + Util.join(", ", userNames),
@@ -355,10 +358,13 @@ public class ManagerServer {
         }
 
         // Agrega un (*) al nombre del usuario que esté siendo monitoreado por el Centinela
-        List<String> users = server.getUsers().stream()
-                .filter(c -> c.isLogged() && c.hasUserName() && c.isWorking())
-                .map(p -> decorateUserName(p))
-                .collect(Collectors.toList());
+        List<String> users = new ArrayList<>();
+        for (User c : server.getUsers()) {
+            if (c.isLogged() && c.hasUserName() && c.isWorking()) {
+                String s = decorateUserName(c);
+                users.add(s);
+            }
+        }
 
         admin.sendMessage("Usuarios trabajando: " + Util.join(", ", users), FontType.FONTTYPE_INFO);
     }
@@ -373,10 +379,14 @@ public class ManagerServer {
             return;
         }
 
-        List<String> users = server.getUsers().stream()
-                .filter(c -> c.isLogged() && c.hasUserName() && c.isHidden()) // FIMXE c.counters().Ocultando > 0
-                .map(User::getUserName)
-                .collect(Collectors.toList());
+        // FIMXE c.counters().Ocultando > 0
+        List<String> users = new ArrayList<>();
+        for (User c : server.getUsers()) {
+            if (c.isLogged() && c.hasUserName() && c.isHidden()) {
+                String userName = c.getUserName();
+                users.add(userName);
+            }
+        }
 
         admin.sendMessage("Usuarios ocultándose: " + Util.join(", ", users), FontType.FONTTYPE_INFO);
     }
@@ -386,10 +396,13 @@ public class ManagerServer {
             return;
         }
 
-        List<String> users = server.getUsers().stream()
-                .filter(c -> c.isLogged() && c.hasUserName() && c.isRoyalArmy())
-                .map(User::getUserName)
-                .collect(Collectors.toList());
+        List<String> users = new ArrayList<>();
+        for (User c : server.getUsers()) {
+            if (c.isLogged() && c.hasUserName() && c.isRoyalArmy()) {
+                String userName = c.getUserName();
+                users.add(userName);
+            }
+        }
 
         admin.sendMessage("Usuarios de la Armada Real: " + Util.join(", ", users), FontType.FONTTYPE_INFO);
     }
@@ -399,10 +412,13 @@ public class ManagerServer {
             return;
         }
 
-        List<String> users = server.getUsers().stream()
-                .filter(c -> c.isLogged() && c.hasUserName() && c.isDarkLegion())
-                .map(User::getUserName)
-                .collect(Collectors.toList());
+        List<String> users = new ArrayList<>();
+        for (User c : server.getUsers()) {
+            if (c.isLogged() && c.hasUserName() && c.isDarkLegion()) {
+                String userName = c.getUserName();
+                users.add(userName);
+            }
+        }
 
         admin.sendMessage("Usuarios de la Legión Oscura: " + Util.join(", ", users), FontType.FONTTYPE_INFO);
     }
@@ -455,7 +471,9 @@ public class ManagerServer {
         Util.sleep(5 * 1000);
         try {
             List<User> u = new ArrayList<>(server.getUsers());
-            u.forEach(User::quitGame);
+            for (User user : u) {
+                user.quitGame();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -511,13 +529,16 @@ public class ManagerServer {
         Log.logGM(admin.getUserName(), "consultó /NICK2IP " + userName);
         admin.sendMessage("La IP de " + userName + " es " + user.getIP(), FontType.FONTTYPE_INFO);
 
-        List<String> userNames = server.getUsers().stream()
-                .filter(p -> p.isLogged()
-                        && p.hasUserName()
-                        && !userName.equalsIgnoreCase(p.getUserName())
-                        && p.getIP().equals(user.getIP()))
-                .map(p -> p.getUserName())
-                .collect(Collectors.toList());
+        List<String> userNames = new ArrayList<>();
+        for (User p : server.getUsers()) {
+            if (p.isLogged()
+                    && p.hasUserName()
+                    && !userName.equalsIgnoreCase(p.getUserName())
+                    && p.getIP().equals(user.getIP())) {
+                String name = p.getUserName();
+                userNames.add(name);
+            }
+        }
         if (!userNames.isEmpty()) {
             admin.sendMessage("Otros personajes con la misma IP son: "
                     + Util.join(", ", userNames), FontType.FONTTYPE_INFO);
@@ -892,12 +913,12 @@ public class ManagerServer {
         if (!admin.isGM()) {
             return;
         }
-        server.getUsers().stream().forEach(p -> {
+        for (User p : server.getUsers()) {
             if (!p.isGM()) {
                 p.sendError("Todos han sido echados del servidor.");
                 p.quitGame();
             }
-        });
+        }
         server.sendToAll(new ConsoleMsgResponse(
                 admin.getUserName() + " echo a todos los jugadores.",
                 FontType.FONTTYPE_INFO.id()));
@@ -1681,13 +1702,16 @@ public class ManagerServer {
         }
         Log.logGM(admin.getUserName(), "/IP2NICK " + ip);
 
-        List<String> userNames = server.getUsers().stream()
-                .filter(p -> p.isLogged()
-                        && p.hasUserName()
-                        && p.getFlags().privileges < admin.getFlags().privileges
-                        && p.getIP().equals(ip))
-                .map(p -> p.getUserName())
-                .collect(Collectors.toList());
+        List<String> userNames = new ArrayList<>();
+        for (User p : server.getUsers()) {
+            if (p.isLogged()
+                    && p.hasUserName()
+                    && p.getFlags().privileges < admin.getFlags().privileges
+                    && p.getIP().equals(ip)) {
+                String userName = p.getUserName();
+                userNames.add(userName);
+            }
+        }
 
         if (!userNames.isEmpty()) {
             admin.sendMessage("Los personajes conectados desde la IP " + ip + "son: "

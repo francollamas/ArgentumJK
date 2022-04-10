@@ -647,7 +647,7 @@ public class Map implements Constants {
     						&& oi.objType != ObjType.Llaves
     						&& oi.objType != ObjType.Carteles) {
     					if (!objects.containsKey(oi.Nombre)) {
-    						objects.put(oi.Nombre, new ArrayList<>());
+    						objects.put(oi.Nombre, new ArrayList<String>());
     					}
     					objects.get(oi.Nombre).add(Pos.xy(x, y).toStringShort());
     				}
@@ -744,9 +744,11 @@ public class Map implements Constants {
     }
     
     public void sendToAllButIndex(int exceptId, ServerPacket packet) {
-    	this.users.stream()
-    		.filter( u -> u.getId() != exceptId )
-    		.forEach( u -> u.sendPacket(packet));
+        for (User u : this.users) {
+            if (u.getId() != exceptId) {
+                u.sendPacket(packet);
+            }
+        }
     }
     
     public void sendToArea(byte x, byte y, ServerPacket packet) {
@@ -816,9 +818,11 @@ public class Map implements Constants {
     
     /** Send user chars in map */
     public void sendUsers(User user) {
-    	this.users.stream()
-    		.filter( u -> !u.equals(user))
-    		.forEach( u -> user.sendPacket(u.characterCreate()));
+        for (User u : this.users) {
+            if (!u.equals(user)) {
+                user.sendPacket(u.characterCreate());
+            }
+        }
     }
     
     /** Send objects in map */
@@ -1604,8 +1608,9 @@ public class Map implements Constants {
         if (getUsersCount() > 0 && Util.random(1, 150) < 12) {
         	final byte sound = randomSoundFx();
             if (sound > -1) {
-            	this.users.stream()
-            		.forEach(u -> u.sendPacket(new PlayWaveResponse(sound, u.pos().x, u.pos().y)));
+                for (User u : this.users) {
+                    u.sendPacket(new PlayWaveResponse(sound, u.pos().x, u.pos().y));
+                }
             }
         }
     }

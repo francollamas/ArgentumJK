@@ -55,9 +55,12 @@ public enum UserRace {
 	}
 	
 	public static UserRace byName(String value) {
-		return Arrays.stream(VALUES)
-				.filter( r -> value.equalsIgnoreCase(r.name()))
-				.findFirst().orElse(null);
+		for (UserRace r : VALUES) {
+			if (value.equalsIgnoreCase(r.name())) {
+				return r;
+			}
+		}
+		return null;
 	}
 	
 	public String toString() {

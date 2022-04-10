@@ -17,14 +17,13 @@
  *******************************************************************************/
 package com.argentumjk.server.forum;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.argentumjk.server.Constants;
@@ -67,8 +66,16 @@ public class ForumManager {
 			fileHandle.writeString("", false);
 		}
 
-		List<String> lines = fileHandle.reader(100).lines().collect(Collectors.toList());
-		String jsonText = Util.join("\n", lines);
+		BufferedReader lines = fileHandle.reader(100);
+		ArrayList<String> array = new ArrayList<String>();
+		try {
+			if (!lines.ready()) {
+				array.add(lines.readLine());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		String jsonText = Util.join("\n", array);
 		return Forum.fromJson(jsonText);
 	}
 
@@ -93,13 +100,25 @@ public class ForumManager {
 	
 	public void sendForumPosts(String foroId, User user) {
 		Forum forum = getForum(foroId);
-		
-		forum.getPosts().stream()
-			.sorted(Comparator.comparing(ForumMessage::getCreateDate, Comparator.nullsLast(Comparator.reverseOrder())))
-			.forEach(post -> {
-				user.sendPacket(new AddForumMsgResponse(post.getTitle(), post.getBody()));
-			});
-		
+
+		List<ForumMessage> orderedPosts = new ArrayList<>(forum.getPosts());
+
+		Collections.sort(orderedPosts, new Comparator<ForumMessage>() {
+			@Override
+			public int compare(ForumMessage o1, ForumMessage o2) {
+				return o1.getCreateDate().compareTo(o2.getCreateDate());
+			}
+		});
+
+		List<ForumMessage> reversedOrderedPosts = new ArrayList<>();
+		for (int i = orderedPosts.size() - 1; i >= 0; i--) {
+			reversedOrderedPosts.add(orderedPosts.get(i));
+		}
+
+		for (ForumMessage post : reversedOrderedPosts) {
+			user.sendPacket(new AddForumMsgResponse(post.getTitle(), post.getBody()));
+		}
+
 		user.sendPacket(new ShowForumFormResponse());
 	}
 	

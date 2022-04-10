@@ -18,10 +18,8 @@
 package com.argentumjk.server.net;
 
 import java.util.List;
-import java.util.Optional;
+import com.argentumjk.server.util.Optional;
 
-
-;
 import com.argentumjk.server.GameServer;
 import com.argentumjk.server.protocol.*;
 

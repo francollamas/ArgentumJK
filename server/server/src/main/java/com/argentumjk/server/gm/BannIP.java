@@ -120,11 +120,11 @@ public class BannIP {
 		server.sendMessageToAdmins(admin, admin.getUserName() + " Baneo la IP " + bannedIP, FontType.FONTTYPE_SERVER);
 		
         // Find every user with that ip and ban him!
-		server.getUsers().stream().forEach(p -> {
+		for (User p : server.getUsers()) {
 			if (p.getIP() == bannedIP) {
 				banUser(admin, p.getUserName(), "Banned IP " + bannedIP + " por: " + reason);
 			}
-		});
+		}
 	}
 
 	public void unbanIP(User admin, String bannedIP) {

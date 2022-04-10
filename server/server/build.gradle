@@ -1,5 +1,6 @@
 [compileJava, compileTestJava]*.options*.compilerArgs << "-Xlint:deprecation"
 eclipse.project.name = appName + '-server'
+sourceCompatibility = 1.7
 
 dependencies {
 	api "com.badlogicgames.gdx:gdx:$gdxVersion"

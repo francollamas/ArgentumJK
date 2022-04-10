@@ -21,7 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Optional;
+import com.argentumjk.server.util.Optional;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -125,9 +125,11 @@ public class Guild {
     
     public void sendPlayWave(byte sound) {
     	// ToGuildMembers
-    	this.members.stream()
-    		.map(GameServer.instance()::userByName)
-    		.forEach( u -> u.sendPacket(new PlayWaveResponse(sound, u.pos().x, u.pos().y)));
+        GameServer gameServer = GameServer.instance();
+        for (String member : this.members) {
+            User u = gameServer.userByName(member);
+            u.sendPacket(new PlayWaveResponse(sound, u.pos().x, u.pos().y));
+        }
     }
     
     public int codexLength() {
@@ -416,11 +418,16 @@ public class Guild {
     }
 
     public void removeMember(String userName) {
-    	Optional<User> user = this.members.stream()
-			.map(GameServer.instance()::userByName)
-			.filter(u -> u.getUserName().equalsIgnoreCase(userName))
-			.findFirst();
-    	if (user.isPresent()) {
+        Optional<User> user = Optional.empty();
+        GameServer gameServer = GameServer.instance();
+        for (String member : this.members) {
+            User u = gameServer.userByName(member);
+            if (u.getUserName().equalsIgnoreCase(userName)) {
+                user = Optional.of(u);
+                break;
+            }
+        }
+        if (user.isPresent()) {
     		this.members.remove(user.get().getUserName());          
     	}
     }

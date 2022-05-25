@@ -30,9 +30,8 @@ allprojects {
 }
 
 configure(subprojects) {
-	apply plugin: 'java-library'
 	apply plugin: 'kotlin'
-	sourceCompatibility = 15
+	sourceCompatibility = 1.8
 	compileJava {
 		options.incremental = true
 	}

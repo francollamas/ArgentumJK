@@ -1,17 +1,16 @@
 package com.argentumjk.client.implementations;
 
+import static com.argentumjk.client.general.FileNames.getMusicDir;
+import static com.argentumjk.client.general.FileNames.getSoundFontDir;
+
 import android.content.Context;
 import cn.sherlock.com.sun.media.sound.SF2Soundbank;
 import cn.sherlock.com.sun.media.sound.SoftSynthesizer;
 import com.argentumjk.client.general.IMidiPlayer;
-import jp.kshoji.javax.sound.midi.*;
-import jp.kshoji.javax.sound.midi.io.StandardMidiFileReader;
-
 import java.io.IOException;
 import java.io.InputStream;
-
-import static com.argentumjk.client.general.FileNames.getMusicDir;
-import static com.argentumjk.client.general.FileNames.getSoundFontDir;
+import jp.kshoji.javax.sound.midi.*;
+import jp.kshoji.javax.sound.midi.io.StandardMidiFileReader;
 
 public class AndroidMidiPlayer implements IMidiPlayer {
 

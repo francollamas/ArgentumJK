@@ -1,15 +1,20 @@
-package com.argentumjk.client.desktop.implementations;
+package com.argentumjk.client.implementations;
+
+import static com.argentumjk.client.general.FileNames.getMusicDir;
+import static com.argentumjk.client.general.FileNames.getSoundFontDir;
 
 import com.argentumjk.client.general.IMidiPlayer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-
-import javax.sound.midi.*;
-
 import java.io.IOException;
-
-import static com.argentumjk.client.general.FileNames.getMusicDir;
-import static com.argentumjk.client.general.FileNames.getSoundFontDir;
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Receiver;
+import javax.sound.midi.Sequence;
+import javax.sound.midi.Sequencer;
+import javax.sound.midi.Soundbank;
+import javax.sound.midi.Synthesizer;
 
 public class DesktopMidiPlayer implements IMidiPlayer {
     private Soundbank soundfont;

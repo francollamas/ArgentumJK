@@ -247,7 +247,7 @@ public class Actors {
         if (width >= 0) celda.width(width);
         if (height >= 0) celda.height(height);
 
-        Table t = celda.getActor();
+        final Table t = celda.getActor();
 
         tp.addListener(new TabbedPaneAdapter() {
             @Override

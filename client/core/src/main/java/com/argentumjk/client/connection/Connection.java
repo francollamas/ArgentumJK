@@ -1,0 +1,27 @@
+package com.argentumjk.client.connection;
+
+/**
+ * Interfaz que define los métodos que tiene que tener una conexión
+ */
+public interface Connection {
+
+    ClientPackages getClPack();
+
+    ServerPackages getSvPack();
+
+    /**
+     * Se conecta con el servidor
+     */
+    boolean connect();
+
+    /**
+     * Busca en la cola y envía datos al servidor
+     */
+    void write();
+
+    /**
+     * Cierra la conexión
+     */
+    void dispose();
+
+}

@@ -14,13 +14,6 @@
       <skipPngCrush>true</skipPngCrush>
     </resource>
     <resource>
-      <directory>../../server/assets</directory>
-      <includes>
-        <include>**</include>
-      </includes>
-      <skipPngCrush>true</skipPngCrush>
-    </resource>
-    <resource>
       <directory>data</directory>
     </resource>
   </resources>
@@ -38,19 +31,20 @@
     <pattern>com.android.org.bouncycastle.crypto.digests.AndroidDigestFactoryOpenSSL</pattern>
     <pattern>org.apache.harmony.security.provider.cert.DRLCertFactory</pattern>
     <pattern>org.apache.harmony.security.provider.crypto.CryptoProvider</pattern>
-    <pattern>java.util.logging.ConsoleHandler</pattern>
+
   </forceLinkClasses>
   <libs>
-      <lib>z</lib>   
+      <lib>z</lib>
   </libs>
   <frameworks>
     <framework>UIKit</framework>
-    <framework>OpenGLES</framework>
+
     <framework>QuartzCore</framework>
     <framework>CoreGraphics</framework>
     <framework>OpenAL</framework>
     <framework>AudioToolbox</framework>
     <framework>AVFoundation</framework>
     <framework>GameController</framework>
+
   </frameworks>
 </config>

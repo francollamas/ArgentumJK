@@ -46,6 +46,15 @@
 # You will probably need this line in most cases:
 -keep public class com.badlogic.gdx.graphics.Color { *; }
 
+-keep class com.kotcrab.** {*;} # TODO: remove this when I remove VisUI
+-keep class com.ray3k.tenpatch.** { *; }
+-keep class io.netty.** { *; }
+-keep class com.google.** { *; }
+-keep class at.favre.** { *; }
+
+# Keep this if we need to use reflection in this project
+#-keepclassmembers class com.argentumjk.client.somepackage.** { void *(...); }
+
 # These two lines are used with mapping files; see https://developer.android.com/build/shrink-code#retracing
 -keepattributes LineNumberTable,SourceFile
 -renamesourcefileattribute SourceFile

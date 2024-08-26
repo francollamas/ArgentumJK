@@ -2,6 +2,7 @@ package com.argentumjk.client;
 
 import com.argentumjk.client.general.EmptyMidiPlayer;
 import com.argentumjk.client.general.IMidiPlayer;
+import com.argentumjk.client.general.Loader;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -48,6 +49,7 @@ public class Game extends com.badlogic.gdx.Game {
 
     public Game(GameParameters gameParameters) {
         this.rebootable = gameParameters.rebootable;
+        this.loader = gameParameters.loader;
         this.midiPlayer = gameParameters.midiPlayer;
         this.connection = gameParameters.connection;
         this.fullscreen = gameParameters.fullscreen;
@@ -60,6 +62,7 @@ public class Game extends com.badlogic.gdx.Game {
     private Batch batch;
 
     private Config config;
+    private Loader loader;
     private Assets assets;
     private Connection connection;
     private GameData gameData;
@@ -156,6 +159,7 @@ public class Game extends com.badlogic.gdx.Game {
         batch.dispose();
         midiPlayer.stop();
         midiPlayer.release();
+        loader.dispose();
     }
 
     /**
@@ -216,5 +220,9 @@ public class Game extends com.badlogic.gdx.Game {
 
     public IMidiPlayer getMidiPlayer() {
         return midiPlayer;
+    }
+
+    public Loader getLoader() {
+        return loader;
     }
 }

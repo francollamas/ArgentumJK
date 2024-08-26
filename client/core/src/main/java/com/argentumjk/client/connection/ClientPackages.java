@@ -337,7 +337,7 @@ public class ClientPackages {
         w.writeByte(0);
         w.writeByte(12);
         w.writeByte(3);
-        
+
         // TODO ACT
         for (int i = 1; i <= 7 ; i++) {
             w.writeShort(0); // 0? u otro valor?
@@ -495,10 +495,12 @@ public class ClientPackages {
         w.writeByte(opt);
     }
 
-    public void writeWarpToMap(short map) {
-        // TODO ALT
-        // w.writeByte(ID.WarpToMap.ordinal());
-        // w.writeShort(map);
+    public void writeWarpToMap(String name, short map, byte x, byte y) {
+        w.writeByte(ID.WarpChar.ordinal());
+        w.writeString(name);
+        w.writeShort(map);
+        w.writeByte(x);
+        w.writeByte(y);
     }
 
     public void writeMoveItem(int slot1, int slot2) {

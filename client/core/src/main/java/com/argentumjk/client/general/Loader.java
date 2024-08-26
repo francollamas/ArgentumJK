@@ -21,4 +21,6 @@ public interface Loader {
      */
     boolean isLoaded();
 
+    void dispose();
+
 }

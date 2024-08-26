@@ -18,9 +18,11 @@ import static com.argentumjk.client.utils.StrUtils.TipoDato.*;
 public class Commands {
 
     // Usado para el /MOD
-    public enum EditOptions {Oro, Exp, Cuerpo, Cabeza, CiuMatados, CriMatados, Nivel, Clase, Skills, SkillsLibres,
-                                Nobleza, Asesino, Sexo, Raza, AgregarOro, NeuMatados, Bando, Vida, Mana, Hambre, Sed,
-                                AtFuerza, AtInteligencia, AtAgilidad, AtCarisma, AtConstitucion}
+    public enum EditOptions {
+        Oro, Exp, Cuerpo, Cabeza, CiuMatados, CriMatados, Nivel, Clase, Skills, SkillsLibres,
+        Nobleza, Asesino, Sexo, Raza, AgregarOro, NeuMatados, Bando, Vida, Mana, Hambre, Sed,
+        AtFuerza, AtInteligencia, AtAgilidad, AtCarisma, AtConstitucion
+    }
 
     public Commands() {
 
@@ -104,6 +106,9 @@ public class Commands {
                         case "/GO":
                             cmdGo(params);
                             break;
+                        case "/TELEP":
+                            cmdTelep(params);
+                            break;
                         case "/CT":
                             cmdCrearTelep(params);
                             break;
@@ -141,8 +146,7 @@ public class Commands {
                             getC().addMessage("Comando inexistente.", Info);
                             break;
                     }
-                }
-                else
+                } else
                     getC().addMessage("Comando inexistente.", Info);
                 break;
         }
@@ -187,16 +191,30 @@ public class Commands {
             getClPack().writeInquiry();
         else
             // Votar
-            getClPack().writeInquiryVote((byte)p[0]);
+            getClPack().writeInquiryVote((byte) p[0]);
     }
 
     private void cmdGo(String[] params) {
-        Object[] p = validar(params, TShort);
+        Object[] p = validar(params, 1, TShort);
 
         if (p == null)
             incorrectMsg("/GO MAPA");
         else
-            getClPack().writeWarpToMap((short)p[0]);
+            getClPack().writeWarpToMap(
+                Game.getInstance().getGameData().getChars().getChar(getU().getIndexInServer()).getNombre(),
+                (short) p[0],
+                (byte) 50,
+                (byte) 50
+            );
+    }
+
+    private void cmdTelep(String[] params) {
+        Object[] p = validar(params, 4, TString, TShort, TByte, TByte);
+
+        if (p == null)
+            incorrectMsg("/TELEP NOMBRE MAPA X Y");
+        else
+            getClPack().writeWarpToMap((String) p[0], (short) p[1], (byte) p[2], (byte) p[3]);
     }
 
     private void cmdCrearTelep(String[] params) {
@@ -205,7 +223,7 @@ public class Commands {
         if (p == null)
             incorrectMsg("/CT MAPA X Y [RADIO]");
         else
-            getClPack().writeTeleportCreate((short)p[0], (byte)p[1], (byte)p[2], p.length == 4 ? (byte)p[3] : 0);
+            getClPack().writeTeleportCreate((short) p[0], (byte) p[1], (byte) p[2], p.length == 4 ? (byte) p[3] : 0);
     }
 
     private void cmdMod(String[] params) {
@@ -216,7 +234,7 @@ public class Commands {
 
         else {
             EditOptions caract;
-            switch ((String)p[1]) {
+            switch ((String) p[1]) {
                 case "BODY":
                     caract = EditOptions.Cuerpo;
                     break;
@@ -267,7 +285,7 @@ public class Commands {
             }
 
             if (caract != null)
-                getClPack().writeEditChar((String)p[0], caract, (String)p[2], p.length == 4 ? (String)p[3] : "");
+                getClPack().writeEditChar((String) p[0], caract, (String) p[2], p.length == 4 ? (String) p[3] : "");
         }
     }
 
@@ -298,7 +316,7 @@ public class Commands {
         if (p == null)
             incorrectMsg("/ITEM NÚMERO [CANTIDAD]");
         else
-            getClPack().writeCreateItem((short)p[0], p.length == 2 ? (short)p[1] : 1);
+            getClPack().writeCreateItem((short) p[0], p.length == 2 ? (short) p[1] : 1);
     }
 
     private void cmdBuscar(String texto) {
@@ -328,11 +346,25 @@ public class Commands {
         return false;
     }
 
-    public String bu(String key) { return Game.getInstance().getBundle().get(key); }
-    public ClientPackages getClPack() { return Game.getInstance().getConnection().getClPack(); }
-    public GameData getGD() { return Game.getInstance().getGameData(); }
-    public User getU() { return getGD().getCurrentUser(); }
-    public Consola getC() { return getGD().getConsola(); }
+    public String bu(String key) {
+        return Game.getInstance().getBundle().get(key);
+    }
+
+    public ClientPackages getClPack() {
+        return Game.getInstance().getConnection().getClPack();
+    }
+
+    public GameData getGD() {
+        return Game.getInstance().getGameData();
+    }
+
+    public User getU() {
+        return getGD().getCurrentUser();
+    }
+
+    public Consola getC() {
+        return getGD().getConsola();
+    }
 }
 
 

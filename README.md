@@ -48,5 +48,5 @@ wstcp --bind-addr 0.0.0.0:7667 localhost:7666
 5. Iniciar el juego en plataforma web:
 ```
 cd client
-./gradlew teavm:run
+./gradlew web:run
 ```

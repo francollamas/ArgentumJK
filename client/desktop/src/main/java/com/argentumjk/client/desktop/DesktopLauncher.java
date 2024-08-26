@@ -9,6 +9,7 @@ import static com.argentumjk.client.general.DtConfig.width;
 
 import com.argentumjk.client.Game;
 import com.argentumjk.client.GameParameters;
+import com.argentumjk.client.desktop.implementations.DesktopLoader;
 import com.argentumjk.client.general.DtConfig;
 import com.argentumjk.client.desktop.implementations.DesktopMidiPlayer;
 import com.badlogic.gdx.Gdx;
@@ -36,9 +37,13 @@ public class DesktopLauncher {
         };
         DtConfig.loadConfig();
 
+        // Usar este booleano para indicar si debe iniciar o no el servidor!
+        boolean shouldLoadServer = false;
+
         GameParameters gameParameters = new GameParameters();
         gameParameters.rebootable = rebootable;
         gameParameters.midiPlayer = new DesktopMidiPlayer();
+        gameParameters.loader = new DesktopLoader(shouldLoadServer);
         gameParameters.fullscreen = fullscreeen;
 
         return new Lwjgl3Application(new Game(gameParameters), getDefaultConfiguration());

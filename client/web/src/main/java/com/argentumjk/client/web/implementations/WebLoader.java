@@ -1,6 +1,7 @@
-package com.argentumjk.client.general;
+package com.argentumjk.client.web.implementations;
 
 import com.argentumjk.client.Game;
+import com.argentumjk.client.general.Loader;
 
 /**
  * Clase para el control de la carga de recursos del juego (en Web)
@@ -30,5 +31,10 @@ public class WebLoader implements Loader {
     @Override
     public boolean isLoaded() {
         return cargado;
+    }
+
+    @Override
+    public void dispose() {
+
     }
 }

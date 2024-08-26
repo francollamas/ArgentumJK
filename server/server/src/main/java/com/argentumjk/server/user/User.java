@@ -1687,7 +1687,6 @@ public class User extends AbstractCharacter {
 		if (this.m_saliendo) {
 			return;
 		}
-		this.m_saliendo = true;
 		Gdx.app.log("Info: ", "saliendo: " + this.getUserName());
 		boolean wasLogged = getFlags().UserLogged;
 		try {
@@ -1710,6 +1709,7 @@ public class User extends AbstractCharacter {
 		} catch (Exception ex) {
 			Gdx.app.error("Fatal: ", "ERROR EN doSALIR(): ", ex);
 		} finally {
+			this.m_saliendo = true;
 			this.server.dropUser(this);
 			if (wasLogged) {
 				try {

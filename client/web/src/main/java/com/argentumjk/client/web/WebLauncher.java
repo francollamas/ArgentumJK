@@ -3,6 +3,7 @@ package com.argentumjk.client.web;
 import com.argentumjk.client.Game;
 import com.argentumjk.client.GameParameters;
 import com.argentumjk.client.web.implementations.WebConnection;
+import com.argentumjk.client.web.implementations.WebLoader;
 import com.github.xpenatan.gdx.backends.teavm.TeaApplicationConfiguration;
 import com.github.xpenatan.gdx.backends.teavm.TeaApplication;
 
@@ -23,6 +24,7 @@ public class WebLauncher {
         config.height = -1;
         GameParameters gameParameters = new GameParameters();
         gameParameters.connection = new WebConnection();
+        gameParameters.loader = new WebLoader();
         new TeaApplication(new Game(gameParameters), config);
     }
 }

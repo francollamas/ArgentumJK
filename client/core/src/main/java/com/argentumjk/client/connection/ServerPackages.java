@@ -52,32 +52,18 @@ public class ServerPackages {
         BankInit,
         UserCommerceInit,
         UserCommerceEnd,
+        UserOfferConfirm,
+        CommerceChat,
         ShowBlacksmithForm,
         ShowCarpenterForm,
-        NPCSwing,
-        NPCKillUser,
-        BlockedWithShieldUser,
-        BlockedWithShieldOther,
-        UserSwing,
-        UpdateNeeded,
-        SafeModeOn,
-        SafeModeOff,
-        ResuscitationSafeOn,
-        ResuscitationSafeOff,
-        NobilityLost,
-        CantUseWhileMeditating,
         UpdateSta,
         UpdateMana,
         UpdateHP,
         UpdateGold,
+        UpdateBankGold,
         UpdateExp,
         ChangeMap,
         PosUpdate,
-        NPCHitUser,
-        UserHitNPC,
-        UserAttackedSwing,
-        UserHittedByUser,
-        UserHittedUser,
         ChatOverHead,
         ConsoleMsg,
         GuildChat,
@@ -93,7 +79,7 @@ public class ServerPackages {
         ObjectCreate,
         ObjectDelete,
         BlockPosition,
-        PlayMIDI,
+        PlayMidi,
         PlayWave,
         guildList,
         AreaChanged,
@@ -134,6 +120,7 @@ public class ServerPackages {
         PeaceProposalsList,
         CharacterInfo,
         GuildLeaderInfo,
+        GuildMemberInfo,
         GuildDetails,
         ShowGuildFundationForm,
         ParalizeOK,
@@ -148,7 +135,16 @@ public class ServerPackages {
         ShowSOSForm,
         ShowMOTDEditionForm,
         ShowGMPanelForm,
-        UserNameList
+        UserNameList,
+        ShowGuildAlign,
+        ShowPartyForm,
+        UpdateStrenghtAndDexterity,
+        UpdateStrenght,
+        UpdateDexterity,
+        AddSlots,
+        MultiMessage,
+        StopWorking,
+        CancelOfferItem,
     }
 
 
@@ -208,9 +204,9 @@ public class ServerPackages {
      */
     public void handleReceived(byte[] bytes) {
         /*
-        * Esta variable se activa si se recibe un paquete que no existe
-        * (para que deje de procesar paquetes, sino se rompe el juego)
-        */
+         * Esta variable se activa si se recibe un paquete que no existe
+         * (para que deje de procesar paquetes, sino se rompe el juego)
+         */
         boolean broken = false;
 
         r.appendBytes(bytes);
@@ -226,118 +222,50 @@ public class ServerPackages {
                 //System.out.println(id);
 
                 switch (id) {
-                    case CreateFX:
-                        handleCreateFX();
-                        break;
-                    case ChangeInventorySlot:
-                        handleChangeInventorySlot();
-                        break;
-                    case ChangeNPCInventorySlot:
-                        handleChangeNPCInventorySlot();
-                        break;
-                    case ChangeSpellSlot:
-                        handleChangeSpellSlot();
-                        break;
-                    case Dumb:
-                        handleDumb();
-                        break;
-                    case DumbNoMore:
-                        handleDumbNoMore();
-                        break;
-                    case Blind:
-                        handleBlind();
-                        break;
-                    case BlindNoMore:
-                        handleBlindNoMore();
-                        break;
-                    case UserIndexInServer:
-                        handleUserIndexInServer();
-                        break;
-                    case ChangeMap:
-                        handleChangeMap();
-                        break;
-                    case PlayMIDI:
-                        handlePlayMusic();
-                        break;
-                    case AreaChanged:
-                        handleAreaChanged();
-                        break;
-                    case CharacterCreate:
-                        handleCharacterCreate();
-                        break;
-                    case CharacterChange:
-                        handleCharacterChange();
-                        break;
-                    case UserCharIndexInServer:
-                        handleUserCharIndexInServer();
-                        break;
-                    case UpdateUserStats:
-                        handleUpdateUserStats();
-                        break;
-                    case UpdateHungerAndThirst:
-                        handleUpdateHungerAndThirst();
-                        break;
-                    // TODO ACT
-                    /*case UpdateStrenghtAndDexterity:
-                        handleUpdateStrenghtAndDexterity();
-                        break;
-                    case UpdateStrenght:
-                        handleUpdateStrenght();
-                        break;
-                    case UpdateDexterity:
-                        handleUpdateDexterity();
-                        break;
-                    */
-                    case SendSkills:
-                        handleSendSkills();
-                        break;
-                    case LevelUp:
-                        handleLevelUp();
-                        break;
                     case Logged:
                         handleLogged();
-                        break;
-                    case ErrorMsg:
-                        handleErrorMsg();
-                        break;
-                    case ShowMessageBox:
-                        handleShowMessageBox();
-                        break;
-                    case ObjectCreate:
-                        handleObjectCreate();
-                        break;
-                    case ObjectDelete:
-                        handleObjectDelete();
-                        break;
-                    case BlockPosition:
-                        handleBlockPosition();
-                        break;
-                    case CharacterMove:
-                        handleCharacterMove();
-                        break;
-                    case PosUpdate:
-                        handlePosUpdate();
-                        break;
-                    case ChatOverHead:
-                        handleChatOverHead();
-                        break;
-                    case ConsoleMsg:
-                        handleConsoleMsg();
-                        break;
-                    case CharacterRemove:
-                        handleCharacterRemove();
-                        break;
-                    case ForceCharMove:
-                        handleForceCharMove();
                         break;
                     case RemoveDialogs:
                         handleRemoveDialogs();
                         break;
-                    case PlayWave:
-                        handlePlaySound();
-                        break;
                     case RemoveCharDialog:
                         handleRemoveCharDialog();
+                        break;
+                    case NavigateToggle:
+                        handleNavigateToggle();
+                        break;
+                    case Disconnect:
+                        handleDisconnect();
+                        break;
+                    case CommerceEnd:
+                        handleCommerceEnd();
+                        break;
+                    case BankEnd:
+                        handleBankEnd();
+                        break;
+                    case CommerceInit:
+                        handleCommerceInit();
+                        break;
+                    case BankInit:
+                        handleBankInit();
+                        break;
+                    case UserCommerceInit:
+                        handleUserCommerceInit();
+                        break;
+                    case UserCommerceEnd:
+                        handleUserCommerceEnd();
+                        break;
+                    case UserOfferConfirm:
+                        handleUserOfferConfirm();
+                        break;
+                    case CommerceChat:
+                        handleCommerceChat();
+                        break;
+                    case ShowBlacksmithForm:
+                        handleShowBlacksmithForm();
+                        break;
+                    case ShowCarpenterForm:
+                        handleShowCarpenterForm();
                         break;
                     case UpdateSta:
                         handleUpdateSta();
@@ -351,75 +279,273 @@ public class ServerPackages {
                     case UpdateGold:
                         handleUpdateGold();
                         break;
+                    case UpdateBankGold:
+                        handleUpdateBankGold();
+                        break;
                     case UpdateExp:
                         handleUpdateExp();
                         break;
-                    case DiceRoll:
-                        handleDiceRoll();
+                    case ChangeMap:
+                        handleChangeMap();
                         break;
-                    case Pong:
-                        handlePong();
+                    case PosUpdate:
+                        handlePosUpdate();
                         break;
-                    case Disconnect:
-                        handleDisconnect();
+                    case ChatOverHead:
+                        handleChatOverHead();
                         break;
-                    case NavigateToggle:
-                        handleNavigateToggle();
+                    case ConsoleMsg:
+                        handleConsoleMsg();
+                        break;
+                    case GuildChat:
+                        handleGuildChat();
+                        break;
+                    case ShowMessageBox:
+                        handleShowMessageBox();
+                        break;
+                    case UserIndexInServer:
+                        handleUserIndexInServer();
+                        break;
+                    case UserCharIndexInServer:
+                        handleUserCharIndexInServer();
+                        break;
+                    case CharacterCreate:
+                        handleCharacterCreate();
+                        break;
+                    case CharacterRemove:
+                        handleCharacterRemove();
+                        break;
+                    case CharacterChangeNick:
+                        handleCharacterChangeNick();
+                        break;
+                    case CharacterMove:
+                        handleCharacterMove();
+                        break;
+                    case ForceCharMove:
+                        handleForceCharMove();
+                        break;
+                    case CharacterChange:
+                        handleCharacterChange();
+                        break;
+                    case ObjectCreate:
+                        handleObjectCreate();
+                        break;
+                    case ObjectDelete:
+                        handleObjectDelete();
+                        break;
+                    case BlockPosition:
+                        handleBlockPosition();
+                        break;
+                    case PlayMidi:
+                        handlePlayMusic();
+                        break;
+                    case PlayWave:
+                        handlePlaySound();
+                        break;
+                    case guildList:
+                        handleGuildList();
+                        break;
+                    case AreaChanged:
+                        handleAreaChanged();
                         break;
                     case PauseToggle:
                         handlePauseToggle();
                         break;
-                    // TODO ACT
-                    //case MultiMessage:
-                        //handleMultiMessage();
-                        //break;
-                    case MeditateToggle:
-                        handleMeditateToggle();
+                    case RainToggle:
+                        handleRainToggle();
                         break;
-                    case CommerceInit:
-                        handleCommerceInit();
+                    case CreateFX:
+                        handleCreateFX();
                         break;
-                    case CommerceEnd:
-                        handleCommerceEnd();
+                    case UpdateUserStats:
+                        handleUpdateUserStats();
+                        break;
+                    case WorkRequestTarget:
+                        handleWorkRequestTarget();
+                        break;
+                    case ChangeInventorySlot:
+                        handleChangeInventorySlot();
+                        break;
+                    case ChangeBankSlot:
+                        handleChangeBankSlot();
+                        break;
+                    case ChangeSpellSlot:
+                        handleChangeSpellSlot();
+                        break;
+                    case Atributes:
+                        handleAtributes();
+                        break;
+                    case BlacksmithWeapons:
+                        handleBlacksmithWeapons();
+                        break;
+                    case BlacksmithArmors:
+                        handleBlacksmithArmors();
+                        break;
+                    case CarpenterObjects:
+                        handleCarpenterObjects();
+                        break;
+                    case RestOK:
+                        handleRestOK();
+                        break;
+                    case ErrorMsg:
+                        handleErrorMsg();
+                        break;
+                    case Blind:
+                        handleBlind();
+                        break;
+                    case Dumb:
+                        handleDumb();
+                        break;
+                    case ShowSignal:
+                        handleShowSignal();
+                        break;
+                    case ChangeNPCInventorySlot:
+                        handleChangeNPCInventorySlot();
+                        break;
+                    case UpdateHungerAndThirst:
+                        handleUpdateHungerAndThirst();
+                        break;
+                    case Fame:
+                        handleFame();
+                        break;
+                    case MiniStats:
+                        handleMiniStats();
+                        break;
+                    case LevelUp:
+                        handleLevelUp();
+                        break;
+                    case AddForumMsg:
+                        handleAddForumMsg();
+                        break;
+                    case ShowForumForm:
+                        handleShowForumForm();
                         break;
                     case SetInvisible:
                         handleSetInvisible();
                         break;
-                    case ResuscitationSafeOff:
-                        handleResuscitationSafeOff();
+                    case DiceRoll:
+                        handleDiceRoll();
                         break;
-                    case ResuscitationSafeOn:
-                        handleResuscitationSafeOn();
+                    case MeditateToggle:
+                        handleMeditateToggle();
                         break;
-                    // TODO ACT
-                    //case UpdateUsersOnline:
-                        //handleUpdateUsersOnline();
-                        //break;
-                    case GuildChat:
-                        handleGuildChat();
+                    case BlindNoMore:
+                        handleBlindNoMore();
                         break;
-                    case SafeModeOn:
-                        handleSafeModeOn();
+                    case DumbNoMore:
+                        handleDumbNoMore();
                         break;
-                    case SafeModeOff:
-                        handleSafeModeOff();
+                    case SendSkills:
+                        handleSendSkills();
+                        break;
+                    case TrainerCreatureList:
+                        handleTrainerCreatureList();
+                        break;
+                    case guildNews:
+                        handleGuildNews();
+                        break;
+                    case OfferDetails:
+                        handleOfferDetails();
+                        break;
+                    case AlianceProposalsList:
+                        handleAlianceProposalsList();
+                        break;
+                    case PeaceProposalsList:
+                        handlePeaceProposalsList();
+                        break;
+                    case CharacterInfo:
+                        handleCharacterInfo();
+                        break;
+                    case GuildLeaderInfo:
+                        handleGuildLeaderInfo();
+                        break;
+                    case GuildMemberInfo:
+                        handleGuildMemberInfo();
+                        break;
+                    case GuildDetails:
+                        handleGuildDetails();
+                        break;
+                    case ShowGuildFundationForm:
+                        handleShowGuildFundationForm();
+                        break;
+                    case ParalizeOK:
+                        handleParalizeOK();
+                        break;
+                    case ShowUserRequest:
+                        handleShowUserRequest();
+                        break;
+                    case TradeOK:
+                        handleTradeOK();
+                        break;
+                    case BankOK:
+                        handleBankOK();
+                        break;
+                    case ChangeUserTradeSlot:
+                        handleChangeUserTradeSlot();
+                        break;
+                    case SendNight:
+                        handleSendNight();
+                        break;
+                    case Pong:
+                        handlePong();
+                        break;
+                    case UpdateTagAndStatus:
+                        handleUpdateTagAndStatus();
+                        break;
+                    case SpawnList:
+                        handleSpawnList();
+                        break;
+                    case ShowSOSForm:
+                        handleShowSOSForm();
+                        break;
+                    case ShowMOTDEditionForm:
+                        handleShowMOTDEditionForm();
+                        break;
+                    case ShowGMPanelForm:
+                        handleShowGMPanelForm();
+                        break;
+                    case UserNameList:
+                        handleUserNameList();
+                        break;
+                    case ShowGuildAlign:
+                        handleShowGuildAlign();
+                        break;
+                    case ShowPartyForm:
+                        handleShowPartyForm();
+                        break;
+                    case UpdateStrenghtAndDexterity:
+                        handleUpdateStrenghtAndDexterity();
+                        break;
+                    case UpdateStrenght:
+                        handleUpdateStrenght();
+                        break;
+                    case UpdateDexterity:
+                        handleUpdateDexterity();
+                        break;
+                    case AddSlots:
+                        handleAddSlots();
+                        break;
+                    case MultiMessage:
+                        handleMultiMessage();
+                        break;
+                    case StopWorking:
+                        handleStopWorking();
+                        break;
+                    case CancelOfferItem:
+                        handleCancelOfferItem();
                         break;
                     default:
-                        System.out.println("Paquete no encontrado: " + id);
-                        // Si llega un paquete que no está implementado...
-                        Dialogs.showOKDialog(bu("error"), "Paquete no implementado: " + id.ordinal() + " '" + id.toString() + "'.");
+                        // Paquete no existente, corto el while
                         broken = true;
+                        Gdx.app.log("TCP", "Paquete desconocido: " + id.ordinal() + " Name: " + id.name());
                         break;
                 }
             }
-
-            r.clear();
-        }
-        catch (NotEnoughDataException ex) {
-            /* Es común que un paquete llegue cortado, por lo que no hay suficientes datos para leer...
-            entonces se vuelve hasta la posición marcada (comienzo del último paquete)
-            */
+        } catch (NotEnoughDataException e) {
+            // No hay suficientes datos para leer el paquete, vuelvo a la posición del comienzo del paquete
             r.reset();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -931,29 +1057,212 @@ public class ServerPackages {
         c.setInvisible(r.readBoolean());
     }
 
-    private void handleResuscitationSafeOff() throws NotEnoughDataException {
-        // TODO ACT
-    }
-
-    private void handleResuscitationSafeOn() throws NotEnoughDataException {
-        // TODO ACT
-    }
-
-    private void handleUpdateUsersOnline() throws NotEnoughDataException {
-        System.out.println("Onlines: " + r.readShort());
-    }
-
     private void handleGuildChat() throws NotEnoughDataException {
         // TODO ACT
         r.readString();
     }
 
-    private void handleSafeModeOn() throws NotEnoughDataException {
-        // TODO ACT
+    private void handleBankEnd() throws NotEnoughDataException {
+        // TODO: Implement handleBankEnd
     }
 
-    private void handleSafeModeOff() throws NotEnoughDataException {
-        // TODO ACT
+    private void handleBankInit() throws NotEnoughDataException {
+        // TODO: Implement handleBankInit
     }
 
+    private void handleUserCommerceInit() throws NotEnoughDataException {
+        // TODO: Implement handleUserCommerceInit
+    }
+
+    private void handleUserCommerceEnd() throws NotEnoughDataException {
+        // TODO: Implement handleUserCommerceEnd
+    }
+
+    private void handleUserOfferConfirm() throws NotEnoughDataException {
+        // TODO: Implement handleUserOfferConfirm
+    }
+
+    private void handleCommerceChat() throws NotEnoughDataException {
+        // TODO: Implement handleCommerceChat
+    }
+
+    private void handleShowBlacksmithForm() throws NotEnoughDataException {
+        // TODO: Implement handleShowBlacksmithForm
+    }
+
+    private void handleShowCarpenterForm() throws NotEnoughDataException {
+        // TODO: Implement handleShowCarpenterForm
+    }
+
+    private void handleUpdateBankGold() throws NotEnoughDataException {
+        // TODO: Implement handleUpdateBankGold
+    }
+
+    private void handleCharacterChangeNick() throws NotEnoughDataException {
+        // TODO: Implement handleCharacterChangeNick
+    }
+
+    private void handleGuildList() throws NotEnoughDataException {
+        // TODO: Implement handleGuildList
+    }
+
+    private void handleRainToggle() throws NotEnoughDataException {
+        // TODO: Implement handleRainToggle
+    }
+
+    private void handleWorkRequestTarget() throws NotEnoughDataException {
+        // TODO: Implement handleWorkRequestTarget
+    }
+
+    private void handleChangeBankSlot() throws NotEnoughDataException {
+        // TODO: Implement handleChangeBankSlot
+    }
+
+    private void handleAtributes() throws NotEnoughDataException {
+        // TODO: Implement handleAtributes
+    }
+
+    private void handleBlacksmithWeapons() throws NotEnoughDataException {
+        // TODO: Implement handleBlacksmithWeapons
+    }
+
+    private void handleBlacksmithArmors() throws NotEnoughDataException {
+        // TODO: Implement handleBlacksmithArmors
+    }
+
+    private void handleCarpenterObjects() throws NotEnoughDataException {
+        // TODO: Implement handleCarpenterObjects
+    }
+
+    private void handleRestOK() throws NotEnoughDataException {
+        // TODO: Implement handleRestOK
+    }
+
+    private void handleShowSignal() throws NotEnoughDataException {
+        // TODO: Implement handleShowSignal
+    }
+
+    private void handleFame() throws NotEnoughDataException {
+        // TODO: Implement handleFame
+    }
+
+    private void handleMiniStats() throws NotEnoughDataException {
+        // TODO: Implement handleMiniStats
+    }
+
+    private void handleAddForumMsg() throws NotEnoughDataException {
+        // TODO: Implement handleAddForumMsg
+    }
+
+    private void handleShowForumForm() throws NotEnoughDataException {
+        // TODO: Implement handleShowForumForm
+    }
+
+    private void handleTrainerCreatureList() throws NotEnoughDataException {
+        // TODO: Implement handleTrainerCreatureList
+    }
+
+    private void handleGuildNews() throws NotEnoughDataException {
+        // TODO: Implement handleGuildNews
+    }
+
+    private void handleOfferDetails() throws NotEnoughDataException {
+        // TODO: Implement handleOfferDetails
+    }
+
+    private void handleAlianceProposalsList() throws NotEnoughDataException {
+        // TODO: Implement handleAlianceProposalsList
+    }
+
+    private void handlePeaceProposalsList() throws NotEnoughDataException {
+        // TODO: Implement handlePeaceProposalsList
+    }
+
+    private void handleCharacterInfo() throws NotEnoughDataException {
+        // TODO: Implement handleCharacterInfo
+    }
+
+    private void handleGuildLeaderInfo() throws NotEnoughDataException {
+        // TODO: Implement handleGuildLeaderInfo
+    }
+
+    private void handleGuildMemberInfo() throws NotEnoughDataException {
+        // TODO: Implement handleGuildMemberInfo
+    }
+
+    private void handleGuildDetails() throws NotEnoughDataException {
+        // TODO: Implement handleGuildDetails
+    }
+
+    private void handleShowGuildFundationForm() throws NotEnoughDataException {
+        // TODO: Implement handleShowGuildFundationForm
+    }
+
+    private void handleParalizeOK() throws NotEnoughDataException {
+        // TODO: Implement handleParalizeOK
+    }
+
+    private void handleShowUserRequest() throws NotEnoughDataException {
+        // TODO: Implement handleShowUserRequest
+    }
+
+    private void handleTradeOK() throws NotEnoughDataException {
+        // TODO: Implement handleTradeOK
+    }
+
+    private void handleBankOK() throws NotEnoughDataException {
+        // TODO: Implement handleBankOK
+    }
+
+    private void handleChangeUserTradeSlot() throws NotEnoughDataException {
+        // TODO: Implement handleChangeUserTradeSlot
+    }
+
+    private void handleSendNight() throws NotEnoughDataException {
+        // TODO: Implement handleSendNight
+    }
+
+    private void handleUpdateTagAndStatus() throws NotEnoughDataException {
+        // TODO: Implement handleUpdateTagAndStatus
+    }
+
+    private void handleSpawnList() throws NotEnoughDataException {
+        // TODO: Implement handleSpawnList
+    }
+
+    private void handleShowSOSForm() throws NotEnoughDataException {
+        // TODO: Implement handleShowSOSForm
+    }
+
+    private void handleShowMOTDEditionForm() throws NotEnoughDataException {
+        // TODO: Implement handleShowMOTDEditionForm
+    }
+
+    private void handleShowGMPanelForm() throws NotEnoughDataException {
+        // TODO: Implement handleShowGMPanelForm
+    }
+
+    private void handleUserNameList() throws NotEnoughDataException {
+        // TODO: Implement handleUserNameList
+    }
+
+    private void handleShowGuildAlign() throws NotEnoughDataException {
+        // TODO: Implement handleShowGuildAlign
+    }
+
+    private void handleShowPartyForm() throws NotEnoughDataException {
+        // TODO: Implement handleShowPartyForm
+    }
+
+    private void handleAddSlots() throws NotEnoughDataException {
+        // TODO: Implement handleAddSlots
+    }
+
+    private void handleStopWorking() throws NotEnoughDataException {
+        // TODO: Implement handleStopWorking
+    }
+
+    private void handleCancelOfferItem() throws NotEnoughDataException {
+        // TODO: Implement handleCancelOfferItem
+    }
 }

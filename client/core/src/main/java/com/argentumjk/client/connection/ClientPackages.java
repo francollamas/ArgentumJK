@@ -28,7 +28,6 @@ public class ClientPackages {
         RequestPositionUpdate,
         Attack,
         PickUp,
-        CombatModeToggle,
         SafeToggle,
         ResuscitationSafeToggle,
         RequestGuildLeaderInfo,
@@ -38,6 +37,8 @@ public class ClientPackages {
         RequestMiniStats,
         CommerceEnd,
         UserCommerceEnd,
+        UserCommerceConfirm,
+        CommerceChat,
         BankEnd,
         UserCommerceOk,
         UserCommerceReject,
@@ -93,6 +94,7 @@ public class ClientPackages {
         RequestAccountState,
         PetStand,
         PetFollow,
+        ReleasePet,
         TrainList,
         Rest,
         Meditate,
@@ -131,12 +133,24 @@ public class ClientPackages {
         BankDepositGold,
         Denounce,
         GuildFundate,
+        GuildFundation,
         PartyKick,
         PartySetLeader,
         PartyAcceptMember,
         Ping,
+        RequestPartyForm,
+        ItemUpgrade,
+        GMCommands,
+        InitCrafting,
+        Home,
+        ShowGuildNews,
+        ShareNpc,
+        StopSharingNpc,
+        Consulta,
+    }
 
-
+    enum GMCommands {
+        Empty,
         GMMessage,
         showName,
         OnlineRoyalArmy,
@@ -335,13 +349,8 @@ public class ClientPackages {
         w.writeString(name);
         w.writeString(password);
         w.writeByte(0);
-        w.writeByte(12);
-        w.writeByte(3);
-
-        // TODO ACT
-        for (int i = 1; i <= 7 ; i++) {
-            w.writeShort(0); // 0? u otro valor?
-        }
+        w.writeByte(13);
+        w.writeByte(0);
     }
 
     public void writeThrowDices() {
@@ -353,24 +362,14 @@ public class ClientPackages {
         w.writeString(name);
         w.writeString(password);
         w.writeByte(0);
-        w.writeByte(12);
-        w.writeByte(3);
-
-        // TODO ACT
-        for (int i = 1; i <= 7 ; i++) {
-            w.writeShort(0); // 0? u otro valor?
-        }
+        w.writeByte(13);
+        w.writeByte(0);
 
         w.writeByte(raza);
         w.writeByte(sexo);
         w.writeByte(clase);
 
-        for (int i = 1; i < 22; i++) {
-            if (i == 1)
-                w.writeByte(10);
-            else
-                w.writeByte(0);
-        }
+        w.writeShort(5); // TODO: implementar selector de cabeza!
 
         w.writeString(mail);
         w.writeByte(ciudad);
@@ -406,7 +405,8 @@ public class ClientPackages {
     }
 
     public void writeWarpChar(String name, int map, Position pos) {
-        w.writeByte(ID.WarpChar.ordinal());
+        w.writeByte(ID.GMCommands.ordinal());
+        w.writeByte(GMCommands.WarpChar.ordinal());
         w.writeString(name);
         w.writeShort(map);
         w.writeByte((byte) pos.getX());
@@ -496,7 +496,8 @@ public class ClientPackages {
     }
 
     public void writeWarpToMap(String name, short map, byte x, byte y) {
-        w.writeByte(ID.WarpChar.ordinal());
+        w.writeByte(ID.GMCommands.ordinal());
+        w.writeByte(GMCommands.WarpChar.ordinal());
         w.writeString(name);
         w.writeShort(map);
         w.writeByte(x);
@@ -504,7 +505,6 @@ public class ClientPackages {
     }
 
     public void writeMoveItem(int slot1, int slot2) {
-        // TODO ALT
         /*w.writeByte(ID.MoveItem.ordinal());
         w.writeByte(slot1);
         w.writeByte(slot2);
@@ -523,7 +523,8 @@ public class ClientPackages {
     }
 
     public void writeTeleportCreate(short map, byte x, byte y, byte radio) {
-        w.writeByte(ID.TeleportCreate.ordinal());
+        w.writeByte(ID.GMCommands.ordinal());
+        w.writeByte(GMCommands.TeleportCreate.ordinal());
         w.writeShort(map);
         w.writeByte(x);
         w.writeByte(y);
@@ -531,11 +532,13 @@ public class ClientPackages {
     }
 
     public void writeTeleportDestroy() {
-        w.writeByte(ID.TeleportDestroy.ordinal());
+        w.writeByte(ID.GMCommands.ordinal());
+        w.writeByte(GMCommands.TeleportDestroy.ordinal());
     }
 
     public void writeEditChar(String nombre, EditOptions caract, String arg1, String arg2) {
-        w.writeByte(ID.EditChar.ordinal());
+        w.writeByte(ID.GMCommands.ordinal());
+        w.writeByte(GMCommands.EditChar.ordinal());
         w.writeString(nombre);
         w.writeByte(caract.ordinal() + 1);
         w.writeString(arg1);
@@ -543,28 +546,33 @@ public class ClientPackages {
     }
 
     public void writeSummonChar(String nombre) {
-        w.writeByte(ID.SummonChar.ordinal());
+        w.writeByte(ID.GMCommands.ordinal());
+        w.writeByte(GMCommands.SummonChar.ordinal());
         w.writeString(nombre);
     }
 
     public void writeGoToChar(String nombre) {
-        w.writeByte(ID.GoToChar.ordinal());
+        w.writeByte(ID.GMCommands.ordinal());
+        w.writeByte(GMCommands.GoToChar.ordinal());
         w.writeString(nombre);
     }
 
     public void writeServerMessage(String nombre) {
-        w.writeByte(ID.ServerMessage.ordinal());
+        w.writeByte(ID.GMCommands.ordinal());
+        w.writeByte(GMCommands.ServerMessage.ordinal());
         w.writeString(nombre);
     }
 
     public void writeCreateItem(short index, short cantidad) {
-        w.writeByte(ID.CreateItem.ordinal());
+        w.writeByte(ID.GMCommands.ordinal());
+        w.writeByte(GMCommands.CreateItem.ordinal());
         w.writeShort(index);
         w.writeShort(cantidad);
     }
 
     public void writeDestroyItems() {
-        w.writeByte(ID.DestroyItems.ordinal());
+        w.writeByte(ID.GMCommands.ordinal());
+        w.writeByte(GMCommands.DestroyItems.ordinal());
     }
 
     public void writeSearchObjs(String texto) {
@@ -574,7 +582,8 @@ public class ClientPackages {
     }
 
     public void writeNpcFollow() {
-        w.writeByte(ID.NPCFollow.ordinal());
+        w.writeByte(ID.GMCommands.ordinal());
+        w.writeByte(GMCommands.NPCFollow.ordinal());
     }
 
     public void writeInvisible() {

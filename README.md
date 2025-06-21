@@ -1,29 +1,14 @@
 # ArgentumJK
-Este proyecto es una recreación del juego Argentum Online, tanto de su cliente como servidor.
+Este proyecto es una recreación del cliente de Argentum Online.
 
 ## Características
-- Basado en Argentum Online 0.12.3
-- Cliente y servidor multiplataforma
-  - El Cliente funciona en: Desktop (Windows, macOS, Linux), Mobile (Android, iOS) y Web.
-  - El Servidor funciona en todas las anteriores excepto Web.
-- Se puede jugar local sin conexión desde un celular.
+- Basado en Argentum Online 0.13.0
+- Es una continuación del proyecto [ArgentumOnline-Mobile](https://github.com/francollamas/ArgentumOnline-Mobile)
+- Multiplataforma: Desktop (Windows, macOS, Linux), Mobile (Android, iOS) y Web.
 - Utiliza los recursos originales en el mismo formato o similar
-
-## Cliente
-Se tomó como base el proyecto [JFenix13](https://github.com/francollamas/ArgentumOnline-Mobile)
-
 - Lenguajes utilizados: Java
-
 - Tecnologías utilizadas:
   - [libGDX](https://libgdx.com) (game development framework)
-
-## Servidor
-Se tomó como base el servidor [aoj-server](https://github.com/gorlok/aoj-server) creado por [Gorlok](https://github.com/gorlok)
-
-- Lenguaje utilizado: Java
-- Multiplataforma (Windows, Linux, macOS)
-- Se adaptó para poder correr también en mobile: Android, iOS
-
 
 ## Ejecutar en Web
 
@@ -34,11 +19,7 @@ Se tomó como base el servidor [aoj-server](https://github.com/gorlok/aoj-server
 cargo install wstcp
 ```
 
-3. Ejecutar servidor con:
-```
-cd server
-./gradlew headless:run
-```
+3. Ejecutar servidor
 
 4. Ejecutar el proxy
 ```

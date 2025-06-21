@@ -6,6 +6,8 @@ import static com.argentumjk.client.general.FileNames.getSoundFontDir;
 import com.argentumjk.client.general.IMidiPlayer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+
+import java.io.File;
 import java.io.IOException;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
@@ -31,11 +33,12 @@ public class DesktopMidiPlayer implements IMidiPlayer {
     @Override
     public void initialize() {
         try {
-            soundfont = MidiSystem.getSoundbank(Gdx.files.internal(getSoundFontDir()).file());
+            File file = new File("./assets/" + getSoundFontDir());
+            soundfont = MidiSystem.getSoundbank(file);
             sequencer = MidiSystem.getSequencer();
             synthesizer = MidiSystem.getSynthesizer();
         } catch (MidiUnavailableException e) {
-            //Gdx.app.error("MidiPlayer", "Error opening midi device.", e);
+            e.printStackTrace();
         } catch (InvalidMidiDataException e) {
             e.printStackTrace();
         } catch (IOException e) {

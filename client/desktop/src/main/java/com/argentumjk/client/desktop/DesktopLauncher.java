@@ -43,7 +43,7 @@ public class DesktopLauncher {
         GameParameters gameParameters = new GameParameters();
         gameParameters.rebootable = rebootable;
         gameParameters.midiPlayer = new DesktopMidiPlayer();
-        gameParameters.loader = new DesktopLoader(shouldLoadServer);
+        gameParameters.loader = new DesktopLoader();
         gameParameters.fullscreen = fullscreeen;
 
         return new Lwjgl3Application(new Game(gameParameters), getDefaultConfiguration());

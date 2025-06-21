@@ -24,7 +24,7 @@ public class AndroidLauncher extends AndroidApplication {
 
         GameParameters gameParameters = new GameParameters();
         gameParameters.midiPlayer = new AndroidMidiPlayer(getContext());
-        gameParameters.loader = new AndroidLoader(shouldLoadServer);
+        gameParameters.loader = new AndroidLoader();
         initialize(new Game(gameParameters), configuration);
     }
 }

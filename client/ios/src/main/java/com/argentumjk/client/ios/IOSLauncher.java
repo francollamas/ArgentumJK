@@ -21,7 +21,7 @@ public class IOSLauncher extends IOSApplication.Delegate {
         boolean shouldLoadServer = true;
 
         GameParameters gameParameters = new GameParameters();
-        gameParameters.loader = new IOSLoader(shouldLoadServer);
+        gameParameters.loader = new IOSLoader();
 
         return new IOSApplication(new Game(), configuration);
     }

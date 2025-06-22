@@ -38,8 +38,8 @@ public class DtConfig {
             Properties props = new Properties();
             props.load(reader);
 
-            width = Integer.parseInt(props.getProperty("width", "1024"));
-            height = Integer.parseInt(props.getProperty("height", "768"));
+            width = Integer.parseInt(props.getProperty("width", "800"));
+            height = Integer.parseInt(props.getProperty("height", "600"));
             decorated = Boolean.parseBoolean(props.getProperty("decorated", "false"));
             resizable = Boolean.parseBoolean(props.getProperty("resizable", "false"));
             fullscreeen = Boolean.parseBoolean(props.getProperty("fullscreeen", "false"));
